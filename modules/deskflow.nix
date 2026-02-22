@@ -13,7 +13,7 @@
     partOf = [ "graphical-session.target" ];
     after = [ "graphical-session.target" ];
     serviceConfig = {
-      ExecStart = "${pkgs.unstable.deskflow}/bin/deskflow-core server -s /etc/Deskflow/deskflow-server.conf";
+      ExecStart = "${pkgs.unstable.deskflow}/bin/deskflow-core server";
       Restart = "on-failure";
       RestartSec = 3;
     };
