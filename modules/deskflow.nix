@@ -24,8 +24,8 @@
     end
 
     section: options
-        keystroke(super+1) = switchToScreen(hxtn)
-        keystroke(super+2) = switchToScreen(work-laptop)
+        keystroke(F4) = switchToScreen(hxtn)
+        keystroke(F5) = switchToScreen(work-laptop)
         keystroke(super+shift+l) = lockCursorToScreen(toggle)
     end
   '';
