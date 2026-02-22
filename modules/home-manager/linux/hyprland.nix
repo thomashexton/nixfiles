@@ -24,7 +24,7 @@
         "hyprpaper"
         "steam"
         "zen"
-        "DISPLAY=:0 deskflow-core server -s /etc/Deskflow/deskflow-server.conf --use-x11"
+        "WAYLAND_DISPLAY= XDG_SESSION_TYPE=x11 DISPLAY=:0 deskflow-server --no-daemon --config /etc/Deskflow/Deskflow.conf"
       ];
 
       # Environment variables
