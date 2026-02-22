@@ -24,7 +24,7 @@
         "hyprpaper"
         "steam"
         "zen"
-        "deskflow-server --no-daemon --config /etc/Deskflow/Deskflow.conf"
+        "deskflow-core server --config /etc/Deskflow/Deskflow.conf"
       ];
 
       # Environment variables
