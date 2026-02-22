@@ -166,10 +166,10 @@
     fish = {
       enable = true;
       shellAliases = {
-        rb = "sudo nixos-rebuild build --flake ~/nix-config#hxtn";
-        rb-test = "sudo nixos-rebuild test --flake ~/nix-config#hxtn";
-        rb-switch = "sudo nixos-rebuild switch --flake ~/nix-config#hxtn";
-        update = "nix flake update --flake ~/nix-config";
+        rb = "sudo nixos-rebuild build --flake ~/nixfiles#hxtn";
+        rb-test = "sudo nixos-rebuild test --flake ~/nixfiles#hxtn";
+        rb-switch = "sudo nixos-rebuild switch --flake ~/nixfiles#hxtn";
+        update = "nix flake update --flake ~/nixfiles";
         ll = "ls -la";
       };
     };

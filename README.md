@@ -12,11 +12,11 @@ NixOS and nix-darwin system configurations managed with flakes and home-manager.
 
 ## Setup
 
-The config lives in `~/nix-config` and is symlinked to `/etc/nixos`:
+The config lives in `~/nixfiles` and is symlinked to `/etc/nixos`:
 
 ```bash
-sudo mv /etc/nixos ~/nix-config
-sudo ln -s /home/thomashexton/nix-config /etc/nixos
+sudo mv /etc/nixos ~/nixfiles
+sudo ln -s /home/thomashexton/nixfiles /etc/nixos
 ```
 
 ## Usage
