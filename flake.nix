@@ -31,17 +31,31 @@
       };
     };
 
-    # Darwin configuration for macOS
+    # Darwin configurations for macOS
     darwinConfigurations = {
-      canva-laptop = nix-darwin.lib.darwinSystem {
+      work-laptop = nix-darwin.lib.darwinSystem {
         system = "aarch64-darwin";
         modules = [
-          ./hosts/canva-laptop/configuration.nix
+          ./hosts/work-laptop/configuration.nix
           home-manager.darwinModules.home-manager
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
-            home-manager.users.thomashexton = import ./hosts/canva-laptop/home.nix;
+            home-manager.users.thomashexton = import ./hosts/work-laptop/home.nix;
+            home-manager.extraSpecialArgs = { inherit zen-browser; };
+          }
+        ];
+      };
+
+      mac-mini = nix-darwin.lib.darwinSystem {
+        system = "aarch64-darwin";
+        modules = [
+          ./hosts/mac-mini/configuration.nix
+          home-manager.darwinModules.home-manager
+          {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.users.thomashexton = import ./hosts/mac-mini/home.nix;
             home-manager.extraSpecialArgs = { inherit zen-browser; };
           }
         ];
