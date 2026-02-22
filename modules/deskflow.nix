@@ -6,18 +6,14 @@
   # Open the Deskflow port (24800) for incoming client connections
   networking.firewall.allowedTCPPorts = [ 24800 ];
 
-  # Autostart deskflow server under Plasma Wayland session
-  systemd.user.services.deskflow-server = {
-    description = "Deskflow KVM server";
-    wantedBy = [ "graphical-session.target" ];
-    partOf = [ "graphical-session.target" ];
-    after = [ "graphical-session.target" ];
-    serviceConfig = {
-      ExecStart = "${pkgs.unstable.deskflow}/bin/deskflow-core server";
-      Restart = "on-failure";
-      RestartSec = 3;
-    };
-  };
+  # Autostart Deskflow GUI under Plasma Wayland session (KDE autostart)
+  environment.etc."xdg/autostart/deskflow.desktop".text = ''
+    [Desktop Entry]
+    Type=Application
+    Name=Deskflow
+    Exec=${pkgs.unstable.deskflow}/bin/deskflow
+    X-KDE-autostart-phase=2
+  '';
 
   # Deskflow server config (screen layout)
   environment.etc."Deskflow/deskflow-server.conf".text = ''
