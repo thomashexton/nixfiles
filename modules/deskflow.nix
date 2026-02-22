@@ -3,6 +3,9 @@
 {
   environment.systemPackages = [ pkgs.deskflow ];
 
+  # Open the Deskflow port (24800) for incoming client connections
+  networking.firewall.allowedTCPPorts = [ 24800 ];
+
   # Deskflow server config (screen layout)
   environment.etc."Deskflow/Deskflow.conf".text = ''
     section: screens
