@@ -118,7 +118,8 @@
       input = {
         kb_layout = "us";
         follow_mouse = 0;
-        sensitivity = 0;
+        sensitivity = 0.0;
+        accel_profile = "flat";
 
         touchpad = {
           natural_scroll = false;
@@ -130,11 +131,6 @@
         workspace_swipe = false;
       };
 
-      # Device-specific configs
-      device = {
-        name = "epic-mouse-v1";
-        sensitivity = -0.5;
-      };
 
       # Main modifier
       "$mainMod" = "SUPER";
@@ -183,6 +179,9 @@
         # Mouse workspace scrolling
         "$mainMod, mouse_down, workspace, e+1"
         "$mainMod, mouse_up, workspace, e-1"
+
+        # Display management
+        "$mainMod, D, exec, wdisplays"
       ];
 
       # Mouse bindings

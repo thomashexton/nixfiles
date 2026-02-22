@@ -83,13 +83,13 @@
   # ===========================================================================
 
   # Plasma6
-  services = {
-    desktopManager.plasma6.enable = true;
-    displayManager.sddm = {
-      enable = true;
-      wayland.enable = true;
-    };
-  };
+  # services = {
+  #   desktopManager.plasma6.enable = true;
+  #   displayManager.sddm = {
+  #     enable = true;
+  #     wayland.enable = true;
+  #   };
+  # };
 
   # # Hyprland
   programs.hyprland.enable = true;
@@ -148,6 +148,7 @@
     waybar
     hyprpaper
     rose-pine-hyprcursor
+    wdisplays   # GUI display configuration tool
   ];
 
   programs = {
