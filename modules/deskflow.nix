@@ -24,9 +24,9 @@
     end
 
     section: options
-        # TODO: consider adding a keystroke to lock cursor to screen
-        # if it becomes annoying losing the mouse to hxtn when not in use
-        # keystroke(super+shift+l) = lockCursorToScreen(toggle)
+        keystroke(super+1) = switchToScreen(hxtn)
+        keystroke(super+2) = switchToScreen(work-laptop)
+        keystroke(super+shift+l) = lockCursorToScreen(toggle)
     end
   '';
 }
