@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, ... }:
 
 {
   imports = [
@@ -83,26 +83,12 @@
   # Desktop Environment Config
   # ===========================================================================
 
-  # Plasma6
-  # services = {
-  #   desktopManager.plasma6.enable = true;
-  #   displayManager.sddm = {
-  #     enable = true;
-  #     wayland.enable = true;
-  #   };
-  # };
-
-  # # Hyprland
-  programs.hyprland.enable = true;
-
-  # greetd display manager (Wayland-native, lightweight)
-  services.greetd = {
-    enable = true;
-    settings = {
-      default_session = {
-        command = "${pkgs.greetd.tuigreet}/bin/tuigreet --remember --remember-user-session --sessions ${config.services.displayManager.sessionData.desktops}/share/wayland-sessions";
-        user = "greeter";
-      };
+  # Plasma 6 + SDDM
+  services = {
+    desktopManager.plasma6.enable = true;
+    displayManager.sddm = {
+      enable = true;
+      wayland.enable = true;
     };
   };
 
@@ -142,14 +128,6 @@
     vim
     wget
     zed-editor
-  ] ++ lib.optionals config.programs.hyprland.enable [
-    # Hyprland ecosystem packages - system-level (condiditional)
-    kdePackages.dolphin
-    fuzzel
-    waybar
-    hyprpaper
-    rose-pine-hyprcursor
-    wdisplays   # GUI display configuration tool
   ];
 
   programs = {

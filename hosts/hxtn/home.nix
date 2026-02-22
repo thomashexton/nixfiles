@@ -3,8 +3,6 @@
 {
   imports = [
     ../../modules/home-manager/common/zed.nix
-    ../../modules/home-manager/linux/hyprland.nix
-    ../../modules/home-manager/linux/waybar.nix
   ];
 
   home.username = "thomashexton";
@@ -18,8 +16,4 @@
   ];
 
   # Host-specific overrides can go here
-  # For example:
-  # wayland.windowManager.hyprland.settings.monitor = [
-  #   "HDMI-A-1,2560x1440@144,0x0,1"  # Override for specific monitor setup
-  # ];
 }

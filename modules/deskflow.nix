@@ -1,13 +1,26 @@
 { config, pkgs, lib, ... }:
 
 {
-  environment.systemPackages = [ pkgs.deskflow ];
+  environment.systemPackages = [ pkgs.unstable.deskflow ];
 
   # Open the Deskflow port (24800) for incoming client connections
   networking.firewall.allowedTCPPorts = [ 24800 ];
 
+  # Autostart deskflow server under Plasma Wayland session
+  systemd.user.services.deskflow-server = {
+    description = "Deskflow KVM server";
+    wantedBy = [ "graphical-session.target" ];
+    partOf = [ "graphical-session.target" ];
+    after = [ "graphical-session.target" ];
+    serviceConfig = {
+      ExecStart = "${pkgs.unstable.deskflow}/bin/deskflow-core server -s /etc/Deskflow/deskflow-server.conf";
+      Restart = "on-failure";
+      RestartSec = 3;
+    };
+  };
+
   # Deskflow server config (screen layout)
-  environment.etc."Deskflow/Deskflow.conf".text = ''
+  environment.etc."Deskflow/deskflow-server.conf".text = ''
     section: screens
         hxtn:
         work-laptop:
