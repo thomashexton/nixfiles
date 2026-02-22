@@ -24,7 +24,7 @@
         "hyprpaper"
         "steam"
         "zen"
-        "deskflow-core server -s /etc/Deskflow/deskflow-server.conf"
+        "DISPLAY=:0 deskflow-core server -s /etc/Deskflow/deskflow-server.conf --use-x11"
       ];
 
       # Environment variables

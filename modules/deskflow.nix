@@ -26,4 +26,16 @@
         # keystroke(super+shift+l) = lockCursorToScreen(toggle)
     end
   '';
+
+  # Generate a self-signed TLS cert for Deskflow on activation
+  system.activationScripts.deskflowTls = ''
+    mkdir -p /etc/Deskflow/tls
+    if [ ! -f /etc/Deskflow/tls/deskflow.pem ]; then
+      ${pkgs.openssl}/bin/openssl req -x509 -nodes -days 3650 \
+        -newkey rsa:2048 \
+        -keyout /etc/Deskflow/tls/deskflow.pem \
+        -out /etc/Deskflow/tls/deskflow.pem \
+        -subj '/CN=hxtn' 2>/dev/null
+    fi
+  '';
 }
