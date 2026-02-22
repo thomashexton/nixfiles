@@ -1,19 +1,13 @@
 { config, pkgs, lib, ... }:
 
 {
-  environment.systemPackages = [ pkgs.unstable.deskflow ];
+  environment.systemPackages = [
+    pkgs.unstable.deskflow
+    pkgs.qt6.qtsvg # Required for Deskflow system tray icon rendering
+  ];
 
   # Open the Deskflow port (24800) for incoming client connections
   networking.firewall.allowedTCPPorts = [ 24800 ];
-
-  # Autostart Deskflow GUI under Plasma Wayland session (KDE autostart)
-  environment.etc."xdg/autostart/deskflow.desktop".text = ''
-    [Desktop Entry]
-    Type=Application
-    Name=Deskflow
-    Exec=${pkgs.unstable.deskflow}/bin/deskflow
-    X-KDE-autostart-phase=2
-  '';
 
   # Deskflow server config (screen layout)
   environment.etc."Deskflow/deskflow-server.conf".text = ''

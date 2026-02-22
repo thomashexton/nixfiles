@@ -15,5 +15,16 @@
     zen-browser.packages."${pkgs.system}".twilight
   ];
 
-  # Host-specific overrides can go here
+  # Deskflow autostart (KDE system tray)
+  xdg.configFile."autostart/org.deskflow.deskflow.desktop".text = ''
+    [Desktop Entry]
+    Categories=Utility;
+    Comment=Mouse and keyboard sharing utility
+    Exec=deskflow
+    Icon=org.deskflow.deskflow
+    Keywords=keyboard;mouse;sharing;network;share;
+    Name=Deskflow
+    Terminal=false
+    Type=Application
+  '';
 }
