@@ -7,7 +7,7 @@
   networking.firewall.allowedTCPPorts = [ 24800 ];
 
   # Deskflow server config (screen layout)
-  environment.etc."Deskflow/Deskflow.conf".text = ''
+  environment.etc."Deskflow/deskflow-server.conf".text = ''
     section: screens
         hxtn:
         work-laptop:
