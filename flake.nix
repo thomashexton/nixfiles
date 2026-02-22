@@ -3,6 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05";
+    nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     nix-darwin.url = "github:LnL7/nix-darwin";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
     home-manager.url = "github:nix-community/home-manager/release-25.05";
@@ -13,12 +14,21 @@
     };
   };
 
-  outputs = { self, nixpkgs, nix-darwin, home-manager, zen-browser, ... }: {
+  outputs = { self, nixpkgs, nixpkgs-unstable, nix-darwin, home-manager, zen-browser, ... }:
+    let
+      unstable-overlay = final: prev: {
+        unstable = import nixpkgs-unstable {
+          system = prev.system;
+          config.allowUnfree = true;
+        };
+      };
+    in {
     # NixOS configuration for desktop
     nixosConfigurations = {
       hxtn = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [
+          { nixpkgs.overlays = [ unstable-overlay ]; }
           ./hosts/hxtn/configuration.nix
           home-manager.nixosModules.home-manager
           {
@@ -36,6 +46,7 @@
       work-laptop = nix-darwin.lib.darwinSystem {
         system = "aarch64-darwin";
         modules = [
+          { nixpkgs.overlays = [ unstable-overlay ]; }
           ./hosts/work-laptop/configuration.nix
           home-manager.darwinModules.home-manager
           {
@@ -50,6 +61,7 @@
       mac-mini = nix-darwin.lib.darwinSystem {
         system = "aarch64-darwin";
         modules = [
+          { nixpkgs.overlays = [ unstable-overlay ]; }
           ./hosts/mac-mini/configuration.nix
           home-manager.darwinModules.home-manager
           {

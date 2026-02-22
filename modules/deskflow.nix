@@ -1,7 +1,7 @@
 { config, pkgs, lib, ... }:
 
 {
-  environment.systemPackages = [ pkgs.deskflow ];
+  environment.systemPackages = [ pkgs.unstable.deskflow ];
 
   # Open the Deskflow port (24800) for incoming client connections
   networking.firewall.allowedTCPPorts = [ 24800 ];
