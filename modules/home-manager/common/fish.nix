@@ -69,6 +69,7 @@
   home.packages = with pkgs; [
     fishPlugins.autopair
     fishPlugins.done
+    just
   ];
 
   # Replaces fishPlugins.z — more modern, better scoring
