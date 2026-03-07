@@ -15,6 +15,7 @@
   boot.loader.efi.canTouchEfiVariables = true;
 
   boot.kernelPackages = pkgs.linuxPackages_latest;
+  boot.kernelModules = [ "ntsync" ];
   boot.initrd.kernelModules = [ "amdgpu" ];
   boot.kernel.sysctl."vm.swappiness" = 10;
   boot.kernel.sysctl."vm.max_map_count" = 2147483642;
