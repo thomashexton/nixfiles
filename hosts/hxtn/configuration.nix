@@ -23,6 +23,7 @@
     graphics = {
       enable = true;
       enable32Bit = true;
+      # mesa is pulled from nixpkgs-unstable via overlay in flake.nix
    };
   };
 

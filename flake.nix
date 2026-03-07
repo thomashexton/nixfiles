@@ -16,12 +16,16 @@
 
   outputs = { self, nixpkgs, nixpkgs-unstable, nix-darwin, home-manager, zen-browser, ... }:
     let
-      unstable-overlay = final: prev: {
-        unstable = import nixpkgs-unstable {
-          system = prev.system;
-          config.allowUnfree = true;
+      unstable-overlay = final: prev:
+        let
+          unstablePkgs = import nixpkgs-unstable {
+            system = prev.system;
+            config.allowUnfree = true;
+          };
+        in {
+          unstable = unstablePkgs;
+          mesa = unstablePkgs.mesa;
         };
-      };
     in {
     # NixOS configuration for desktop
     nixosConfigurations = {
