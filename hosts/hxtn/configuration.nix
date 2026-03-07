@@ -24,7 +24,10 @@
     graphics = {
       enable = true;
       enable32Bit = true;
-      # mesa is pulled from nixpkgs-unstable via overlay in flake.nix
+      # Use unstable mesa for GPU drivers only (DRI/Vulkan) — keeps stable
+      # mesa for system services like SDDM to avoid OpenGL init breakage
+      package = pkgs.unstable.mesa;
+      package32 = pkgs.unstable.mesa;
    };
   };
 
@@ -166,6 +169,7 @@
     };
 
     gamemode.enable = true;
+    gamescope.enable = true; # makes binary available system-wide; use via Steam launch options per-game
 
     fish.enable = true;
   };
