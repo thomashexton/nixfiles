@@ -24,7 +24,6 @@
           };
         in {
           unstable = unstablePkgs;
-          mesa = unstablePkgs.mesa;
         };
     in {
     # NixOS configuration for desktop
