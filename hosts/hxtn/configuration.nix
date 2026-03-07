@@ -148,16 +148,7 @@
       ];
     };
 
-    fish = {
-      enable = true;
-      shellAliases = {
-        rb = "sudo nixos-rebuild build --flake ~/nixfiles#hxtn";
-        rb-test = "sudo nixos-rebuild test --flake ~/nixfiles#hxtn";
-        rb-switch = "sudo nixos-rebuild switch --flake ~/nixfiles#hxtn";
-        update = "nix flake update --flake ~/nixfiles";
-        ll = "ls -la";
-      };
-    };
+    fish.enable = true;
   };
 
   system.stateVersion = "25.05";
