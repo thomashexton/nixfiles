@@ -152,13 +152,15 @@
     steam = {
       enable = true;
       extest.enable = true;
+      package = pkgs.steam.override {
+        extraEnv = {
+          MANGOHUD = "1";
+          MANGOHUD_CONFIG = "read_cfg,no_display";
+        };
+      };
       extraCompatPackages = with pkgs; [
         proton-ge-bin
       ];
-      extraEnv = {
-        MANGOHUD = "1";
-        MANGOHUD_CONFIG = "read_cfg,no_display";
-      };
     };
 
     gamemode.enable = true;
