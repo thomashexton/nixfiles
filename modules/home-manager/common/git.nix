@@ -1,6 +1,8 @@
 { config, pkgs, ... }:
 
 {
+  programs.gh.enable = true;
+
   # Note: Package is installed at system level
   programs.git = {
     enable = true;

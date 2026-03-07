@@ -2,6 +2,7 @@
 
 {
   imports = [
+    ../../modules/home-manager/common/git.nix
     ../../modules/home-manager/common/zed.nix
   ];
 
