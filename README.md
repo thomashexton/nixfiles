@@ -22,17 +22,13 @@ sudo ln -s /home/thomashexton/nixfiles /etc/nixos
 ## Usage
 
 ```bash
-# Build without switching
-rb
-
-# Build and switch
-rb-switch
-
-# Build and test (switch without adding boot entry)
-rb-test
-
-# Update flake inputs
-update
+just switch    # day-to-day: apply config and update bootloader
+just test      # riskier changes: apply config without touching the bootloader
+               # so a reboot reverts you if something breaks (NixOS only)
+just validate hxtn  # verify a host's config builds before applying it
+                    # useful for checking hxtn from a Mac without SSHing in
+just update    # bump all flake inputs to latest
+just check     # validate the flake structure without switching
 ```
 
 ## Notes
