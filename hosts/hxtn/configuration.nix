@@ -16,16 +16,14 @@
 
   boot.kernelPackages = pkgs.linuxPackages_latest;
   boot.initrd.kernelModules = [ "amdgpu" ];
+  boot.kernel.sysctl."vm.swappiness" = 10;
+  boot.kernel.sysctl."vm.max_map_count" = 2147483642;
 
   hardware = {
     graphics = {
       enable = true;
       enable32Bit = true;
    };
-    # amdgpu.amdvlk = {
-    #     enable = true;
-    #     support32Bit.enable = true;
-    # };
   };
 
   # ===========================================================================
@@ -83,6 +81,17 @@
     pulse = {
       enable = true;
     };
+    jack.enable = true;
+    extraConfig.pipewire."92-low-latency" =
+      let quantum = 512; # tune between 512-1024; lower = less latency, higher = less crackling
+      in {
+        "context.properties" = {
+          "default.clock.rate" = 48000;
+          "default.clock.quantum" = quantum;
+          "default.clock.min-quantum" = quantum;
+          "default.clock.max-quantum" = quantum;
+        };
+      };
   };
 
   # ===========================================================================
@@ -129,7 +138,6 @@
     nixfmt-rfc-style
     nodejs_20
     pavucontrol
-    protonup-qt
     tree
     vim
     wget
@@ -143,10 +151,17 @@
     };
     steam = {
       enable = true;
+      extest.enable = true;
       extraCompatPackages = with pkgs; [
         proton-ge-bin
       ];
+      extraEnv = {
+        MANGOHUD = "1";
+        MANGOHUD_CONFIG = "read_cfg,no_display";
+      };
     };
+
+    gamemode.enable = true;
 
     fish.enable = true;
   };
