@@ -11,7 +11,8 @@
 
   programs.home-manager.enable = true;
 
-  home.packages = [
+  home.packages = with pkgs; [
+    just
     zen-browser.packages."${pkgs.system}".twilight
   ];
 
