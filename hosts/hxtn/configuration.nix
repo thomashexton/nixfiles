@@ -24,10 +24,6 @@
     graphics = {
       enable = true;
       enable32Bit = true;
-      # Use unstable mesa for GPU drivers only (DRI/Vulkan) — keeps stable
-      # mesa for system services like SDDM to avoid OpenGL init breakage
-      package = pkgs.unstable.mesa;
-      package32 = pkgs.unstable.mesa;
    };
   };
 
@@ -138,8 +134,10 @@
     fishPlugins.z
     git
     ghostty
+    goverlay
     mangohud
     nil
+    protontricks
     nixfmt-rfc-style
     nodejs_20
     pavucontrol
