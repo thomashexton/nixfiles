@@ -133,8 +133,10 @@
     fishPlugins.done
     fishPlugins.z
     git
+    bottles
     ghostty
     goverlay
+    lutris
     mangohud
     nil
     protontricks
