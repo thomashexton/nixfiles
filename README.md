@@ -13,8 +13,9 @@ NixOS and nix-darwin system configurations managed with flakes and Home Manager.
 ## Current State
 
 - Nix is installed on `mac-mini` via Determinate Nix.
-- `nix-darwin` is defined in this repo, but `darwin-rebuild` is not available until the first Darwin activation.
-- Until that first activation, use plain `nix build` or `nix run` for validation.
+- On macOS hosts using Determinate, nix-darwin imports Determinate's Darwin module and sets `determinateNix.enable = true;`.
+- `mac-mini` has already had its first Darwin activation, so `darwin-rebuild` is available there now.
+- On a fresh macOS host, `darwin-rebuild` is not available until the first Darwin activation; until then, use plain `nix build` or `nix run` for validation.
 - The existing `~/dotfiles` bootstrap/stow setup remains the rollback path while macOS migration is incremental.
 
 ## macOS Bootstrap
@@ -51,8 +52,9 @@ nix flake check
 Bootstrap `nix-darwin` with a one-off `nix run`:
 
 ```bash
-sudo nix run github:nix-darwin/nix-darwin/nix-darwin-25.11#darwin-rebuild -- \
-  switch --flake ~/nixfiles#mac-mini
+cd ~/nixfiles
+sudo nix run "github:nix-darwin/nix-darwin/nix-darwin-25.11#darwin-rebuild" -- \
+  switch --flake .#mac-mini
 ```
 
 After the first successful switch, `darwin-rebuild` should be available for normal use.
@@ -101,8 +103,10 @@ binary is coming from `/nix/var/nix/profiles/default/bin/nix`, with config in
 - the `nix-daemon`
 - Determinate cache/substituter settings
 
-It does not yet provide `darwin-rebuild`, because this machine has not been
-switched to the nix-darwin config yet.
+This repo therefore disables nix-darwin’s own Nix installer integration on
+macOS by importing Determinate's nix-darwin module and setting
+`determinateNix.enable = true;`. On a fresh macOS install, the first
+activation still has to bootstrap `darwin-rebuild` via `nix run`.
 
 ### Why KDE Plasma instead of Hyprland?
 

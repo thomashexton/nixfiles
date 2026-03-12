@@ -6,7 +6,7 @@
     ../../modules/darwin/roles/personal-homebrew.nix
   ];
 
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  determinateNix.enable = true;
 
   nixpkgs.config.allowUnfree = true;
   nixpkgs.hostPlatform = "aarch64-darwin";

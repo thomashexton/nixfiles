@@ -4,6 +4,7 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    determinate.url = "github:DeterminateSystems/determinate";
     nix-darwin.url = "github:nix-darwin/nix-darwin/nix-darwin-25.11";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
     home-manager.url = "github:nix-community/home-manager/release-25.11";
@@ -14,7 +15,7 @@
     };
   };
 
-  outputs = { self, nixpkgs, nixpkgs-unstable, nix-darwin, home-manager, zen-browser, ... }:
+  outputs = { self, nixpkgs, nixpkgs-unstable, determinate, nix-darwin, home-manager, zen-browser, ... }:
     let
       unstable-overlay = final: prev:
         let
@@ -50,6 +51,7 @@
         system = "aarch64-darwin";
         modules = [
           { nixpkgs.overlays = [ unstable-overlay ]; }
+          determinate.darwinModules.default
           ./hosts/work-laptop/configuration.nix
           home-manager.darwinModules.home-manager
           {
@@ -66,6 +68,7 @@
         system = "aarch64-darwin";
         modules = [
           { nixpkgs.overlays = [ unstable-overlay ]; }
+          determinate.darwinModules.default
           ./hosts/mac-mini/configuration.nix
           home-manager.darwinModules.home-manager
           {
