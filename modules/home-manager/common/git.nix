@@ -6,25 +6,27 @@
   # Note: Package is installed at system level
   programs.git = {
     enable = true;
-    userName = "Thomas Hexton";
-    userEmail = "25544371+thomashexton@users.noreply.github.com";
-    
-    extraConfig = {
+    settings = {
+      user = {
+        name = "Thomas Hexton";
+        email = "25544371+thomashexton@users.noreply.github.com";
+      };
+
       init.defaultBranch = "main";
       pull.rebase = true;
-      
+
       push = {
         autoSetupRemote = true;
       };
-      
+
       diff = {
         external = "difft";
       };
-      
+
       pager = {
         branch = false;
       };
-      
+
       alias = {
         # Traditional aliases
         tdiff = "-c diff.external= diff --no-ext-diff";

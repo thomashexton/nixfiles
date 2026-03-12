@@ -14,7 +14,7 @@
 
   home.packages = with pkgs; [
     just
-    zen-browser.packages."${pkgs.system}".twilight
+    zen-browser.packages."${pkgs.stdenv.hostPlatform.system}".twilight
   ];
 
   # Deskflow autostart (KDE system tray)

@@ -20,7 +20,14 @@ test:
 
 # Build a host's config without activating it
 validate host:
-    nix build -L .#nixosConfigurations.{{host}}.config.system.build.toplevel
+    #!/usr/bin/env bash
+    set -euo pipefail
+    case "{{host}}" in
+        hxtn)        nix build -L .#nixosConfigurations.{{host}}.config.system.build.toplevel ;;
+        work-laptop) nix build -L .#darwinConfigurations.{{host}}.system ;;
+        mac-mini)    nix build -L .#darwinConfigurations.{{host}}.system ;;
+        *)           echo "Unknown host: {{host}}" && exit 1 ;;
+    esac
 
 # Update all flake inputs
 update:
