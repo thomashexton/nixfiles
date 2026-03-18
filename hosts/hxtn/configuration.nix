@@ -117,7 +117,7 @@
     extraGroups = [ "wheel" "networkmanager" ];
     shell = pkgs.fish;
     openssh.authorizedKeys.keys = [
-      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBw2OMn/ZEtk9CRa9vrKLSRAscXoF7TGxwKdDSo1obnO"
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAWmZ5MK+XXYlgK7u7RrRxZAThUFN6DUjbcWBBTZ5Pxr hxtn"
     ];
     packages = with pkgs; [
     ];
