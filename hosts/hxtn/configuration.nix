@@ -134,6 +134,7 @@
     fishPlugins.z
     git
     bottles
+    unstable.faugus-launcher
     ghostty
     goverlay
     lutris
