@@ -8,8 +8,8 @@ switch:
     #!/usr/bin/env bash
     set -euo pipefail
     case "{{hostname}}" in
-        work-laptop) darwin-rebuild switch --flake .#work-laptop --show-trace --print-build-logs ;;
-        mac-mini)    darwin-rebuild switch --flake .#mac-mini --show-trace --print-build-logs ;;
+        work-laptop) sudo darwin-rebuild switch --flake .#work-laptop --show-trace --print-build-logs ;;
+        mac-mini)    sudo darwin-rebuild switch --flake .#mac-mini --show-trace --print-build-logs ;;
         hxtn)        sudo nixos-rebuild switch --flake .#hxtn --show-trace --print-build-logs ;;
         *)           echo "Unknown host: {{hostname}}" && exit 1 ;;
     esac
