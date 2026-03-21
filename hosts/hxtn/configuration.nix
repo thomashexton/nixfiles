@@ -32,6 +32,8 @@
   # ===========================================================================
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  # Allow Zed's bundled Node-based language servers to run on NixOS.
+  # programs.nix-ld.enable = true;
 
   networking.hostName = "hxtn";
 
@@ -127,7 +129,6 @@
 
   environment.systemPackages = with pkgs; [
     alacritty
-    alejandra
     fish
     fishPlugins.autopair
     fishPlugins.done
@@ -139,7 +140,7 @@
     goverlay
     lutris
     mangohud
-    nil
+    nixd
     protontricks
     nixfmt-rfc-style
     nodejs_20

@@ -1,4 +1,4 @@
-{ pkgs, zen-browser, ... }:
+{ lib, pkgs, zen-browser, ... }:
 
 {
   imports = [
@@ -30,5 +30,10 @@
     Name=Deskflow
     Terminal=false
     Type=Application
+  '';
+
+  home.activation.plasmaKeyboardRepeat = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    ${pkgs.kdePackages.kconfig}/bin/kwriteconfig6 --file "$HOME/.config/kcminputrc" --group Keyboard --key RepeatDelay 200
+    ${pkgs.kdePackages.kconfig}/bin/kwriteconfig6 --file "$HOME/.config/kcminputrc" --group Keyboard --key RepeatRate 40
   '';
 }
