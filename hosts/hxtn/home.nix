@@ -13,7 +13,9 @@
   programs.home-manager.enable = true;
 
   home.packages = with pkgs; [
+    codex
     just
+    mcp-nixos
     zen-browser.packages."${pkgs.stdenv.hostPlatform.system}".twilight
   ];
 
