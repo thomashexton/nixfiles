@@ -1,4 +1,4 @@
-{ config, pkgs, zen-browser, ... }:
+{ pkgs, zen-browser, ... }:
 
 {
   imports = [
@@ -13,7 +13,7 @@
   programs.home-manager.enable = true;
 
   home.packages = with pkgs; [
-    codex
+    unstable.codex
     just
     mcp-nixos
     zen-browser.packages."${pkgs.stdenv.hostPlatform.system}".twilight

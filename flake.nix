@@ -15,12 +15,12 @@
     };
   };
 
-  outputs = { self, nixpkgs, nixpkgs-unstable, determinate, nix-darwin, home-manager, zen-browser, ... }:
+  outputs = { nixpkgs, nixpkgs-unstable, determinate, nix-darwin, home-manager, zen-browser, ... }:
     let
-      unstable-overlay = final: prev:
+      unstable-overlay = _final: prev:
         let
           unstablePkgs = import nixpkgs-unstable {
-            system = prev.system;
+            system = prev.stdenv.hostPlatform.system;
             config.allowUnfree = true;
           };
         in {
