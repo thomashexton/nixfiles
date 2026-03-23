@@ -45,6 +45,7 @@
   # ===========================================================================
 
   networking.networkmanager.enable = true;
+  networking.interfaces.enp14s0.wakeOnLan.enable = true;
 
   # Prevent sleep/suspend — hxtn is always-on as a Deskflow KVM server
   systemd.targets.sleep.enable = false;

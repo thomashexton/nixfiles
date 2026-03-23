@@ -1,11 +1,12 @@
-{ ... }:
+{ pkgs, ... }:
 
 {
   programs.tmux = {
     enable = true;
     package = null;
 
-    shell = "/bin/zsh";
+    # TODO: switch Darwin hosts to fish here once the macOS setup is ready.
+    shell = if pkgs.stdenv.hostPlatform.isDarwin then "/bin/zsh" else "${pkgs.fish}/bin/fish";
     terminal = "tmux-256color";
     mouse = true;
     keyMode = "vi";

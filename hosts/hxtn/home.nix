@@ -3,6 +3,7 @@
 {
   imports = [
     ../../modules/home-manager/common/git.nix
+    ../../modules/home-manager/common/tmux.nix
     ../../modules/home-manager/common/zed.nix
   ];
 
@@ -16,6 +17,7 @@
     unstable.codex
     just
     mcp-nixos
+    tmux
     zen-browser.packages."${pkgs.stdenv.hostPlatform.system}".twilight
   ];
 
