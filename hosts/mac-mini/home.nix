@@ -10,7 +10,6 @@
     ../../modules/home-manager/common/zsh.nix
     ../../modules/home-manager/darwin/aerospace.nix
     ../../modules/home-manager/darwin/kanata.nix
-    ./modules/migration-cleanup.nix
   ];
 
   home.username = "thomashexton";
