@@ -1,42 +1,51 @@
 { config, pkgs, ... }:
 
 let
+  kanataPkg = pkgs.unstable.kanata;
   homeDir = config.home.homeDirectory;
-  kanataBin = "/opt/homebrew/bin/kanata";
+  kanataBin = "${kanataPkg}/bin/kanata";
+  kanataConfigDir = pkgs.linkFarm "kanata-config" [
+    {
+      name = "kanata.kbd";
+      path = pkgs.writeText "kanata.kbd" ''
+        ;; Repo-managed kanata config for macOS.
+        ;; Karabiner remains installed only to provide the VirtualHID driver.
+
+        ;; caps lock: tap = esc, hold = ctrl
+        (defalias
+          cap (tap-hold-press 120 120 esc lctl)
+        )
+
+        (defsrc
+          f1   f2   f3   f4   f5   f6   f7   f8   f9   f10  f11  f12
+          grv  1    2    3    4    5    6    7    8    9    0    -    =    bspc
+          tab  q    w    e    r    t    y    u    i    o    p    [    ]    \
+          caps a    s    d    f    g    h    j    k    l    ;    '    ret
+          lsft z    x    c    v    b    n    m    ,    .    /    rsft
+          lctl lalt lmet           spc            rmet ralt
+        )
+
+        (deflayer base
+          brdn brup _    _    _    _    prev pp   next mute vold volu
+          grv  1    2    3    4    5    6    7    8    9    0    -    =    bspc
+          tab  q    w    e    r    t    y    u    i    o    p    [    ]    \
+          @cap a    s    d    f    g    h    j    k    l    ;    '    ret
+          lsft z    x    c    v    b    n    m    ,    .    /    rsft
+          lctl lalt lmet           spc            ralt rmet
+        )
+      '';
+    }
+  ];
   kanataConfig = "${homeDir}/.config/kanata/kanata.kbd";
 in
 {
-  xdg.configFile."kanata/kanata.kbd".text = ''
-    ;; Repo-managed kanata config for macOS.
-    ;; Karabiner remains installed only to provide the VirtualHID driver.
-
-    ;; caps lock: tap = esc, hold = ctrl
-    (defalias
-      cap (tap-hold-press 120 120 esc lctl)
-    )
-
-    (defsrc
-      f1   f2   f3   f4   f5   f6   f7   f8   f9   f10  f11  f12
-      grv  1    2    3    4    5    6    7    8    9    0    -    =    bspc
-      tab  q    w    e    r    t    y    u    i    o    p    [    ]    \
-      caps a    s    d    f    g    h    j    k    l    ;    '    ret
-      lsft z    x    c    v    b    n    m    ,    .    /    rsft
-      lctl lalt lmet           spc            rmet ralt
-    )
-
-    (deflayer base
-      brdn brup _    _    _    _    prev pp   next mute vold volu
-      grv  1    2    3    4    5    6    7    8    9    0    -    =    bspc
-      tab  q    w    e    r    t    y    u    i    o    p    [    ]    \
-      @cap a    s    d    f    g    h    j    k    l    ;    '    ret
-      lsft z    x    c    v    b    n    m    ,    .    /    rsft
-      lctl lalt lmet           spc            ralt rmet
-    )
-  '';
-
-  xdg.configFile."kanata/kanata.kbd".force = true;
+  xdg.configFile."kanata" = {
+    source = kanataConfigDir;
+    force = true;
+  };
 
   home.packages = [
+    kanataPkg
     (pkgs.writeShellScriptBin "kanata-check" ''
       set -euo pipefail
 

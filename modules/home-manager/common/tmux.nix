@@ -3,9 +3,8 @@
 {
   programs.tmux = {
     enable = true;
-    package = null;
+    package = pkgs.tmux;
 
-    # TODO: switch Darwin hosts to fish here once the macOS setup is ready.
     shell = if pkgs.stdenv.hostPlatform.isDarwin then "/bin/zsh" else "${pkgs.fish}/bin/fish";
     terminal = "tmux-256color";
     mouse = true;
@@ -16,8 +15,6 @@
     escapeTime = 0;
     customPaneNavigationAndResize = true;
 
-    # Keep TPM external for now; this only moves the declarative config shape
-    # into Home Manager without changing your existing plugin bootstrap.
     extraConfig = ''
       set -ag terminal-overrides ",xterm-256color:RGB"
       set -g renumber-windows on
@@ -45,17 +42,20 @@
 
       bind r source-file ~/.config/tmux/tmux.conf \; display "Config reloaded"
       bind x kill-pane
-
-      set -g @plugin 'tmux-plugins/tpm'
-      set -g @plugin 'tmux-plugins/tmux-sensible'
-      set -g @plugin 'tmux-plugins/tmux-resurrect'
-      set -g @plugin 'tmux-plugins/tmux-continuum'
-      set -g @plugin 'tmux-plugins/tmux-yank'
-
-      set -g @continuum-restore 'on'
-
-      run '~/.tmux/plugins/tpm/tpm'
     '';
+
+    sensibleOnTop = true;
+
+    plugins = with pkgs.tmuxPlugins; [
+      resurrect
+      {
+        plugin = continuum;
+        extraConfig = ''
+          set -g @continuum-restore 'on'
+        '';
+      }
+      yank
+    ];
   };
 
   xdg.configFile."tmux/tmux.conf".force = true;

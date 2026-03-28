@@ -2,7 +2,7 @@
 
 {
   imports = [
-    ../../modules/home-manager/common/codex-mcp.nix
+    ../../modules/home-manager/common/codex.nix
     ../../modules/home-manager/common/git.nix
     ../../modules/home-manager/common/tmux.nix
     ../../modules/home-manager/common/zed.nix

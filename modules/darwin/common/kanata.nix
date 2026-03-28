@@ -1,8 +1,9 @@
-{ ... }:
+{ pkgs, ... }:
 
 let
+  kanataPkg = pkgs.unstable.kanata;
   homeDir = "/Users/thomashexton";
-  kanataBin = "/opt/homebrew/bin/kanata";
+  kanataBin = "${kanataPkg}/bin/kanata";
   kanataConfig = "${homeDir}/.config/kanata/kanata.kbd";
 in
 {

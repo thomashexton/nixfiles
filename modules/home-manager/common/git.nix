@@ -1,11 +1,22 @@
-{ config, pkgs, ... }:
+{ ... }:
 
 {
-  programs.gh.enable = true;
-
-  # Note: Package is installed at system level
   programs.git = {
     enable = true;
+    lfs.enable = true;
+    ignores = [
+      "*.DS_Store"
+      ".DS_Store"
+      "._*"
+      ".Spotlight-V100"
+      ".Trashes"
+      "*~"
+      "*.bak"
+      "*.swp"
+      "*.swo"
+      "*.log"
+      "**/.claude/settings.local.json"
+    ];
     settings = {
       user = {
         name = "Thomas Hexton";
@@ -15,35 +26,23 @@
       init.defaultBranch = "main";
       pull.rebase = true;
 
-      push = {
-        autoSetupRemote = true;
-      };
+      push.autoSetupRemote = true;
 
-      diff = {
-        external = "difft";
-      };
+      diff.external = "difft";
 
-      pager = {
-        branch = false;
-      };
+      pager.branch = false;
 
       alias = {
-        # Traditional aliases
         tdiff = "-c diff.external= diff --no-ext-diff";
-        # Parent branch
         parent = "!git show-branch | grep '*' | grep -v \"$(git rev-parse --abbrev-ref HEAD)\" | head -n1 | sed 's/.*\\[\\(.*\\)\\].*/\\1/' | sed 's/[\\^~].*//' #";
       };
-      
-      core = {
-        editor = "zed --wait";
-      };
-      
-      filter.lfs = {
-        clean = "git-lfs clean -- %f";
-        smudge = "git-lfs smudge -- %f";
-        process = "git-lfs filter-process";
-        required = true;
-      };
+
+      merge.conflictstyle = "diff3";
+
+      core.editor = "zed --wait";
     };
   };
+
+  xdg.configFile."git/config".force = true;
+  xdg.configFile."git/ignore".force = true;
 }
