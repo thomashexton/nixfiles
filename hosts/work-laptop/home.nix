@@ -2,7 +2,7 @@
 
 {
   imports = [
-    ../../modules/home-manager/common/claude.nix
+    ../../modules/home-manager/common/claude
     ./modules/claude.nix
   ];
 

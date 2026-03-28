@@ -3,8 +3,8 @@
 {
   imports = [
     ../../modules/home-manager/common/alacritty.nix
-    ../../modules/home-manager/common/claude.nix
-    ../../modules/home-manager/common/codex.nix
+    ../../modules/home-manager/common/claude
+    ../../modules/home-manager/common/codex
     ../../modules/home-manager/common/git.nix
     ../../modules/home-manager/common/tmux.nix
     ../../modules/home-manager/common/zsh.nix

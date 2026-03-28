@@ -1,6 +1,11 @@
-{ ... }:
+{ config, ... }:
 
 {
+  home.file.".claude/settings.json" = {
+    force = true;
+    source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/nixfiles/modules/home-manager/common/claude/settings.json";
+  };
+
   home.file.".claude/statusline-command.sh" = {
     force = true;
     executable = true;
