@@ -2,6 +2,8 @@
 
 {
   imports = [
+    ../../modules/home-manager/common/codex-mcp.nix
+    ../../modules/home-manager/darwin/kanata.nix
     ../../modules/home-manager/common/tmux.nix
   ];
 

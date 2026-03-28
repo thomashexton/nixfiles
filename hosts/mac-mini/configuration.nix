@@ -3,6 +3,7 @@
 {
   imports = [
     ../../modules/darwin/common/homebrew.nix
+    ../../modules/darwin/common/kanata.nix
     ../../modules/darwin/roles/personal-homebrew.nix
   ];
 

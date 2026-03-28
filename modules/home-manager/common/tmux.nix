@@ -57,4 +57,6 @@
       run '~/.tmux/plugins/tpm/tpm'
     '';
   };
+
+  xdg.configFile."tmux/tmux.conf".force = true;
 }
