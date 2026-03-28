@@ -11,9 +11,9 @@ let
         ;; Repo-managed kanata config for macOS.
         ;; Karabiner remains installed only to provide the VirtualHID driver.
 
-        ;; caps lock: tap = esc, hold = ctrl
+        ;; caps lock: tap = escape, hold = left control
         (defalias
-          cap (tap-hold-press 120 120 esc lctl)
+          cap (tap-hold 200 200 esc lctl)
         )
 
         (defsrc
