@@ -24,18 +24,18 @@
     zen-browser.packages."${pkgs.stdenv.hostPlatform.system}".twilight
   ];
 
-  # Deskflow autostart (KDE system tray)
-  xdg.configFile."autostart/org.deskflow.deskflow.desktop".text = ''
-    [Desktop Entry]
-    Categories=Utility;
-    Comment=Mouse and keyboard sharing utility
-    Exec=deskflow
-    Icon=org.deskflow.deskflow
-    Keywords=keyboard;mouse;sharing;network;share;
-    Name=Deskflow
-    Terminal=false
-    Type=Application
-  '';
+  # # Deskflow autostart (KDE system tray)
+  # xdg.configFile."autostart/org.deskflow.deskflow.desktop".text = ''
+  #   [Desktop Entry]
+  #   Categories=Utility;
+  #   Comment=Mouse and keyboard sharing utility
+  #   Exec=deskflow
+  #   Icon=org.deskflow.deskflow
+  #   Keywords=keyboard;mouse;sharing;network;share;
+  #   Name=Deskflow
+  #   Terminal=false
+  #   Type=Application
+  # '';
 
   home.activation.plasmaKeyboardRepeat = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     ${pkgs.kdePackages.kconfig}/bin/kwriteconfig6 --file "$HOME/.config/kcminputrc" --group Keyboard --key RepeatDelay 200

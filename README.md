@@ -147,6 +147,42 @@ standalone-Home-Manager target rather than another `nixosConfigurations` or
 
 ## Notes
 
+### Config ownership
+
+This repo does not treat every file under `~/.config` or `~/.claude` as the
+same kind of thing.
+
+Use this rule:
+
+- If Home Manager has a clear native module and the setting is declarative, use
+  typed Nix options.
+- If the file is still declarative but the app's native format is clearer, keep
+  it in Nix as a raw file.
+- If the file needs to stay writable at its canonical path, or the app is
+  expected to rewrite it itself, keep the link managed by Home Manager but
+  point it at a mutable file in this repo with `mkOutOfStoreSymlink`.
+
+In practice, that means:
+
+- Typed Nix: `git`, `tmux`, `aerospace`
+- Store-backed raw files: `kanata`, `zsh`, `~/.claude/statusline-command.sh`,
+  `work-laptop`'s `CLAUDE.md`
+- Out-of-store files: `~/.codex/config.toml`, `~/.claude/settings.json`,
+  `~/.config/alacritty/alacritty.toml`
+
+The important distinction is config versus state:
+
+- Declarative config should be repo-authored and reproducible.
+- Files that need to stay writable at their canonical path should not be
+  frozen into the Nix store, or the next `just switch` will put the declared
+  version back.
+
+For out-of-store files in this repo, the home-directory path becomes a symlink
+to a real file in `~/nixfiles`, not to `/nix/store`. That means edits at the
+home-directory path, including writes made by the app itself, update the repo
+file directly. Home Manager manages the symlink; the repo file remains the
+source of truth.
+
 ### Home Manager in this repo
 
 This repo does use Home Manager, but not in standalone mode.

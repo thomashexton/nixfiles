@@ -2,7 +2,7 @@
 
 {
   imports = [
-    ../../modules/home-manager/common/alacritty.nix
+    ../../modules/home-manager/common/alacritty
     ../../modules/home-manager/common/claude
     ../../modules/home-manager/common/codex
     ../../modules/home-manager/common/git.nix

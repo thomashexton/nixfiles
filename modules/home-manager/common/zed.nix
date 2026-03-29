@@ -2,7 +2,7 @@
 
 {
   # Note: Package is installed at system level
-  
+
   # Zed configuration managed declaratively
   xdg.configFile."zed/settings.json".source =
     (pkgs.formats.json { }).generate "zed-settings.json" {

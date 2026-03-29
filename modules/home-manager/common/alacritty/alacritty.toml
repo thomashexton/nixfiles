@@ -1,0 +1,96 @@
+[env]
+TERM = "xterm-256color"
+
+[font]
+size = 15.0
+
+[font.bold]
+family = "JetBrainsMono Nerd Font"
+style = "Bold"
+
+[font.bold_italic]
+family = "JetBrainsMono Nerd Font"
+style = "Bold Italic"
+
+[font.italic]
+family = "JetBrainsMono Nerd Font"
+style = "Regular Italic"
+
+[font.normal]
+family = "JetBrainsMono Nerd Font"
+style = "Regular"
+
+[window]
+decorations = "buttonless"
+opacity = 1.0
+
+[window.padding]
+x = 20
+
+[general]
+live_config_reload = true
+
+[[keyboard.bindings]]
+key = "Return"
+mods = "Shift"
+chars = "\u001b\r"
+
+[[keyboard.bindings]]
+key = "T"
+mods = "Control"
+chars = "\u0002c"
+
+[[keyboard.bindings]]
+key = "W"
+mods = "Control"
+chars = "\u0002x"
+
+[[keyboard.bindings]]
+key = "K"
+mods = "Control"
+chars = "\u0002s"
+
+[[keyboard.bindings]]
+key = "Key1"
+mods = "Control"
+chars = "\u00021"
+
+[[keyboard.bindings]]
+key = "Key2"
+mods = "Control"
+chars = "\u00022"
+
+[[keyboard.bindings]]
+key = "Key3"
+mods = "Control"
+chars = "\u00023"
+
+[[keyboard.bindings]]
+key = "Key4"
+mods = "Control"
+chars = "\u00024"
+
+[[keyboard.bindings]]
+key = "Key5"
+mods = "Control"
+chars = "\u00025"
+
+[[keyboard.bindings]]
+key = "Key6"
+mods = "Control"
+chars = "\u00026"
+
+[[keyboard.bindings]]
+key = "Key7"
+mods = "Control"
+chars = "\u00027"
+
+[[keyboard.bindings]]
+key = "Key8"
+mods = "Control"
+chars = "\u00028"
+
+[[keyboard.bindings]]
+key = "Key9"
+mods = "Control"
+chars = "\u00029"
