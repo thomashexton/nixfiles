@@ -47,18 +47,18 @@
 
     # Darwin configurations for macOS
     darwinConfigurations = {
-      work-laptop = nix-darwin.lib.darwinSystem {
+      macbook-pro = nix-darwin.lib.darwinSystem {
         system = "aarch64-darwin";
         modules = [
           { nixpkgs.overlays = [ unstable-overlay ]; }
           determinate.darwinModules.default
-          ./hosts/work-laptop/configuration.nix
+          ./hosts/macbook-pro/configuration.nix
           home-manager.darwinModules.home-manager
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.backupFileExtension = "pre-nix";
-            home-manager.users.thomashexton = import ./hosts/work-laptop/home.nix;
+            home-manager.users.thomashexton = import ./hosts/macbook-pro/home.nix;
             home-manager.extraSpecialArgs = { inherit zen-browser; };
           }
         ];

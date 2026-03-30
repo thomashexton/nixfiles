@@ -17,14 +17,14 @@ NixOS and nix-darwin system configurations managed with flakes and Home Manager.
 |------|-----|------|-------------|
 | `hxtn` | NixOS | x86_64-linux | Desktop (AMD, KDE Plasma 6) |
 | `mac-mini` | macOS | aarch64-darwin | Personal Mac Mini |
-| `work-laptop` | macOS | aarch64-darwin | Work MacBook Pro |
+| `macbook-pro` | macOS | aarch64-darwin | Work MacBook Pro |
 
 ## Current State
 
 - Nix is installed on `mac-mini` via Determinate Nix.
 - On macOS hosts using Determinate, nix-darwin imports Determinate's Darwin module and sets `determinateNix.enable = true;`.
 - `mac-mini` has already had its first Darwin activation, so `darwin-rebuild` is available there now.
-- On a fresh macOS host, `darwin-rebuild` is not available until the first Darwin activation; until then, use plain `nix build` or `nix run` for validation.
+- On a fresh macOS host, `darwin-rebuild` is not available until the first Darwin activation; use `just bootstrap <host>` which handles this via `nix run`.
 - The existing `~/dotfiles` bootstrap/stow setup remains the rollback path while macOS migration is incremental.
 
 ## Fresh macOS Setup
@@ -54,20 +54,23 @@ cd ~/nixfiles
 If `just` is not on `PATH` yet, run it through Nix:
 
 ```bash
-nix run nixpkgs#just -- validate mac-mini
+nix run nixpkgs#just -- validate macbook-pro
 nix flake check
 ```
 
 ### 4. First nix-darwin activation
 
-Bootstrap `nix-darwin` with a one-off `nix run`, because `darwin-rebuild` is
-not installed until after the first activation:
+`darwin-rebuild` is not installed until after the first activation. Use the
+`just bootstrap` recipe, passing your host name:
 
 ```bash
 cd ~/nixfiles
-sudo nix run "github:nix-darwin/nix-darwin/nix-darwin-25.11#darwin-rebuild" -- \
-  switch --flake .#mac-mini
+nix run nixpkgs#just -- bootstrap macbook-pro   # work MacBook Pro
+nix run nixpkgs#just -- bootstrap mac-mini      # personal Mac Mini
 ```
+
+This also sets the machine's hostname via `networking.hostName` in the config,
+so it will match the flake name after activation.
 
 After the first successful switch, normal day-to-day usage is:
 
@@ -156,7 +159,7 @@ This repo does use Home Manager, but not in standalone mode.
 The Home Manager entrypoints are the host home files:
 
 - `hosts/mac-mini/home.nix`
-- `hosts/work-laptop/home.nix`
+- `hosts/macbook-pro/home.nix`
 - `hosts/hxtn/home.nix`
 
 ### Flakes and experimental features

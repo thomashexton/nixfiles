@@ -13,19 +13,19 @@
   environment.etc."Deskflow/deskflow-server.conf".text = ''
     section: screens
         hxtn:
-        work-laptop:
+        macbook-pro:
     end
 
     section: links
         hxtn:
-            up = work-laptop
-        work-laptop:
+            up = macbook-pro
+        macbook-pro:
             down = hxtn
     end
 
     section: options
         # keystroke(F4) = switchToScreen(hxtn)
-        # keystroke(F5) = switchToScreen(work-laptop)
+        # keystroke(F5) = switchToScreen(macbook-pro)
         # keystroke(super+shift+l) = lockCursorToScreen(toggle)
     end
   '';

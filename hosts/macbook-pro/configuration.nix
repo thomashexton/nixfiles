@@ -23,5 +23,9 @@
     tree
   ];
 
+  networking.hostName = "macbook-pro";
+  networking.localHostName = "macbook-pro";
+  networking.computerName = "Thomas's MacBook Pro";
+
   system.stateVersion = 5;
 }

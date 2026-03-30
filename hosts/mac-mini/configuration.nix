@@ -25,5 +25,9 @@
     tree
   ];
 
+  networking.hostName = "mac-mini";
+  networking.localHostName = "mac-mini";
+  networking.computerName = "Thomas's Mac Mini";
+
   system.stateVersion = 5;
 }
