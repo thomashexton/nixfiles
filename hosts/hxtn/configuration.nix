@@ -3,7 +3,7 @@
 {
   imports = [
     ./hardware-configuration.nix
-    ../../modules/deskflow.nix
+    ../../modules/nixos/deskflow.nix
   ];
 
   # ===========================================================================

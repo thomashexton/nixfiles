@@ -1,8 +1,8 @@
-{ ... }:
+{ pkgs, ... }:
 
 let
   homeDir = "/Users/thomashexton";
-  kanataBin = "/etc/profiles/per-user/thomashexton/bin/kanata";
+  kanataBin = "${pkgs.kanata}/bin/kanata";
   kanataConfig = "${homeDir}/.config/kanata/kanata.kbd";
 in
 {

@@ -2,9 +2,9 @@
 
 {
   imports = [
-    ../../modules/darwin/common/homebrew.nix
-    ../../modules/darwin/common/kanata.nix
-    ../../modules/darwin/roles/personal-homebrew.nix
+    ../../modules/darwin/packages.nix
+    ../../modules/darwin/kanata.nix
+    ../../modules/darwin/homebrew.nix
   ];
 
   determinateNix.enable = true;
@@ -15,13 +15,18 @@
 
   users.users.thomashexton.home = "/Users/thomashexton";
 
+  homebrew = {
+    brews = [ "mas" ];
+    casks = [ "1password" "cursor" "dropbox" ];
+    masApps = { Metadatics = 554883654; };
+  };
+
   # System packages for macOS
   environment.systemPackages = with pkgs; [
     fish
     fishPlugins.autopair
     fishPlugins.done
     fishPlugins.z
-    git
     tree
   ];
 

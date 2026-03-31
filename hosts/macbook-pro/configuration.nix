@@ -2,7 +2,8 @@
 
 {
   imports = [
-    ../../modules/darwin/common/homebrew.nix
+    ../../modules/darwin/packages.nix
+    ../../modules/darwin/homebrew.nix
   ];
 
   determinateNix.enable = true;
@@ -19,7 +20,6 @@
     fishPlugins.autopair
     fishPlugins.done
     fishPlugins.z
-    git
     tree
   ];
 
