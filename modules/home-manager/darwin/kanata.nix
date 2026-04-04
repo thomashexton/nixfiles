@@ -11,6 +11,14 @@ let
         ;; Repo-managed kanata config for macOS.
         ;; Karabiner remains installed only to provide the VirtualHID driver.
 
+        (defcfg
+          process-unmapped-keys no
+          macos-dev-names-exclude (
+            "Charybdis Nano (3x5) Splinky"
+            "endgame"
+          )
+        )
+
         ;; caps lock: tap = escape, hold = left control
         (defalias
           cap (tap-hold 200 200 esc lctl)
