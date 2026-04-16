@@ -1,9 +1,8 @@
 { config, pkgs, ... }:
 
 let
-  kanataPkg = pkgs.unstable.kanata;
   homeDir = config.home.homeDirectory;
-  kanataBin = "${kanataPkg}/bin/kanata";
+  kanataBin = "/opt/homebrew/bin/kanata";
   kanataConfigDir = pkgs.linkFarm "kanata-config" [
     {
       name = "kanata.kbd";
@@ -53,7 +52,6 @@ in
   };
 
   home.packages = [
-    kanataPkg
     (pkgs.writeShellScriptBin "kanata-check" ''
       set -euo pipefail
 
@@ -89,6 +87,16 @@ in
       fi
 
       exec sudo "''${KANATA_BIN}" --cfg "''${KANATA_CONFIG}"
+    '')
+    (pkgs.writeShellScriptBin "kanata-reload-service" ''
+      set -euo pipefail
+
+      readonly KANATA_PLIST="/Library/LaunchDaemons/com.thomashexton.kanata.plist"
+      readonly KANATA_SERVICE="system/com.thomashexton.kanata"
+
+      sudo launchctl bootout system "''${KANATA_PLIST}" 2>/dev/null || true
+      sudo launchctl bootstrap system "''${KANATA_PLIST}"
+      exec sudo launchctl print "''${KANATA_SERVICE}"
     '')
   ];
 }
