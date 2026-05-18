@@ -16,9 +16,11 @@
 
   home.packages = with pkgs; [
     unstable.codex
+    discord
     just
     mcp-nixos
     tmux
+    wowup-cf
     zen-browser.packages."${pkgs.stdenv.hostPlatform.system}".twilight
   ];
 

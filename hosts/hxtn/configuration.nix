@@ -111,6 +111,10 @@
     };
   };
 
+  services.udev.packages = with pkgs; [
+    vial
+  ];
+
   # ===========================================================================
   # Users & Packages Config
   # ===========================================================================
@@ -138,16 +142,19 @@
     bottles
     unstable.faugus-launcher
     ghostty
-    goverlay
+    unstable.goverlay
     lutris
-    mangohud
+    unstable.mangohud
+    mesa-demos
     nixd
     protontricks
     nixfmt-rfc-style
     nodejs_20
     pavucontrol
     tree
+    vial
     vim
+    vulkan-tools
     wget
     zed-editor
   ];
