@@ -52,7 +52,7 @@ approval_mode = "approve"
 session_picker_view = "dense"
 
 [tui.model_availability_nux]
-"gpt-5.5" = 2
+"gpt-5.5" = 4
 
 [notice.model_migrations]
 "gpt-5.4" = "gpt-5.5"
