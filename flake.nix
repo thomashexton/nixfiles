@@ -9,13 +9,14 @@
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
     home-manager.url = "github:nix-community/home-manager/release-25.11";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
+    nix-citizen.url = "github:LovingMelody/nix-citizen";
     zen-browser = {
       url = "github:0xc000022070/zen-browser-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
-  outputs = { nixpkgs, nixpkgs-unstable, determinate, nix-darwin, home-manager, zen-browser, ... }:
+  outputs = { nixpkgs, nixpkgs-unstable, determinate, nix-darwin, home-manager, nix-citizen, zen-browser, ... }:
     let
       unstable-overlay = _final: prev:
         let
@@ -32,8 +33,14 @@
       hxtn = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [
-          { nixpkgs.overlays = [ unstable-overlay ]; }
+          {
+            nixpkgs.overlays = [
+              (_final: prev: { unixodbc = prev.unixODBC; })
+              unstable-overlay
+            ];
+          }
           ./hosts/hxtn/configuration.nix
+          nix-citizen.nixosModules.default
           home-manager.nixosModules.home-manager
           {
             home-manager.useGlobalPkgs = true;

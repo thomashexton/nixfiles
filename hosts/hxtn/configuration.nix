@@ -20,6 +20,12 @@
   boot.kernel.sysctl."vm.swappiness" = 10;
   boot.kernel.sysctl."vm.max_map_count" = 2147483642;
 
+  zramSwap = {
+    enable = true;
+    algorithm = "zstd";
+    memoryPercent = 25;
+  };
+
   hardware = {
     graphics = {
       enable = true;
@@ -32,6 +38,10 @@
   # ===========================================================================
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  nix.settings.extra-substituters = [ "https://nix-citizen.cachix.org" ];
+  nix.settings.extra-trusted-public-keys = [
+    "nix-citizen.cachix.org-1:lPMkWc2X8XD4/7YPEEwXKKBg+SVbYTVrAaLA2wQTKCo="
+  ];
   # Allow Zed's bundled Node-based language servers to run on NixOS.
   # programs.nix-ld.enable = true;
 
@@ -109,6 +119,7 @@
       enable = true;
       wayland.enable = true;
     };
+    lact.enable = true;
   };
 
   services.udev.packages = with pkgs; [
@@ -180,6 +191,15 @@
 
     gamemode.enable = true;
     gamescope.enable = true; # makes binary available system-wide; use via Steam launch options per-game
+
+    rsi-launcher = {
+      enable = true;
+      umu.enable = true;
+      preCommands = ''
+        export MANGOHUD=1
+        export MANGOHUD_CONFIG=read_cfg
+      '';
+    };
 
     fish.enable = true;
   };
