@@ -27,10 +27,12 @@
   };
 
   hardware = {
+    amdgpu.overdrive.enable = true;
+
     graphics = {
       enable = true;
       enable32Bit = true;
-   };
+    };
   };
 
   # ===========================================================================
@@ -153,6 +155,7 @@
     bottles
     unstable.faugus-launcher
     ghostty
+    google-chrome
     unstable.goverlay
     lutris
     unstable.mangohud
