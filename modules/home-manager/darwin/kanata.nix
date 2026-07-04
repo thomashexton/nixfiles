@@ -15,6 +15,7 @@ let
           macos-dev-names-exclude (
             "Charybdis Nano (3x5) Splinky"
             "endgame"
+            "2.4g REC"
           )
         )
 
