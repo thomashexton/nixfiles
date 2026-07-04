@@ -21,5 +21,6 @@
   home.packages = with pkgs; [
     just
     mcp-nixos
+    unstable.streamrip
   ];
 }

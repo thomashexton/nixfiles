@@ -1,5 +1,5 @@
 model = "gpt-5.5"
-model_reasoning_effort = "high"
+model_reasoning_effort = "xhigh"
 sandbox_mode = "workspace-write"
 approval_policy = "on-request"
 
@@ -15,6 +15,9 @@ trust_level = "trusted"
 [projects."/home/thomashexton/nixfiles"]
 trust_level = "trusted"
 
+[projects."/Users/thomashexton/qmk"]
+trust_level = "trusted"
+
 [sandbox_workspace_write]
 network_access = true
 
@@ -22,6 +25,21 @@ network_access = true
 multi_agent = true
 
 [plugins."github@openai-curated"]
+enabled = true
+
+[plugins."computer-use@openai-bundled"]
+enabled = true
+
+[plugins."browser-use@openai-bundled"]
+enabled = true
+
+[plugins."documents@openai-primary-runtime"]
+enabled = true
+
+[plugins."spreadsheets@openai-primary-runtime"]
+enabled = true
+
+[plugins."presentations@openai-primary-runtime"]
 enabled = true
 
 [mcp_servers.nixos]
@@ -56,3 +74,13 @@ session_picker_view = "dense"
 
 [notice.model_migrations]
 "gpt-5.4" = "gpt-5.5"
+
+[marketplaces.openai-bundled]
+last_updated = "2026-04-25T10:35:08Z"
+source_type = "local"
+source = "/Users/thomashexton/.codex/.tmp/bundled-marketplaces/openai-bundled"
+
+[marketplaces.openai-primary-runtime]
+last_updated = "2026-04-25T10:35:24Z"
+source_type = "local"
+source = "/Users/thomashexton/.cache/codex-runtimes/codex-primary-runtime/plugins/openai-primary-runtime"
