@@ -155,7 +155,6 @@
     bottles
     unstable.faugus-launcher
     ghostty
-    google-chrome
     unstable.goverlay
     lutris
     unstable.mangohud
