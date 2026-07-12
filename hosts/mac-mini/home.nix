@@ -9,7 +9,7 @@
     ../../modules/home-manager/common/tmux.nix
     ../../modules/home-manager/common/zsh.nix
     ../../modules/home-manager/darwin/aerospace.nix
-    ../../modules/home-manager/darwin/kanata.nix
+    ../../modules/home-manager/darwin/karabiner
   ];
 
   home.username = "thomashexton";

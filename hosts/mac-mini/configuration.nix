@@ -3,7 +3,6 @@
 {
   imports = [
     ../../modules/darwin/packages.nix
-    ../../modules/darwin/kanata.nix
     ../../modules/darwin/homebrew.nix
   ];
 

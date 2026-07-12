@@ -7,7 +7,6 @@
     fzf
     gh
     git
-    kanata
     lazygit
     neovim
     stow
