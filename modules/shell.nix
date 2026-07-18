@@ -1,4 +1,3 @@
-# Interactive shell packages shared by both operating-system classes.
 {
   darwin.base =
     { pkgs, ... }:

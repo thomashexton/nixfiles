@@ -1,4 +1,3 @@
-# Exposes nixpkgs-unstable as pkgs.unstable on every host.
 { inputs, ... }:
 
 let

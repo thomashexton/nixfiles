@@ -1,4 +1,3 @@
-# Keyboard remapping and configuration tools for the NixOS desktop.
 {
   nixos.workstation =
     { pkgs, ... }:

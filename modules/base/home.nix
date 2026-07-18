@@ -1,4 +1,3 @@
-# Shared home-manager baseline for thomashexton on every host.
 {
   home.base =
     { pkgs, ... }:

@@ -2,8 +2,6 @@
   darwin.workstation =
     { pkgs, ... }:
     {
-      # Keep the GUI application system-wide on both Macs. The user
-      # configuration is enabled by the desktop home profile.
       environment.systemPackages = [ pkgs.alacritty ];
     };
 
@@ -21,9 +19,7 @@
         source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/nixfiles/modules/alacritty/alacritty.toml";
       };
 
-      # Window decorations differ by platform: "buttonless" is macOS-only and
-      # Linux Alacritty warns on it. Kept in a tiny generated file imported by
-      # alacritty.toml, so the main config stays one shared, live-editable file.
+      # "buttonless" is macOS-only; isolate it so the shared live config stays portable.
       xdg.configFile."alacritty/decorations.toml".text = ''
         [window]
         decorations = "${if pkgs.stdenv.hostPlatform.isDarwin then "buttonless" else "full"}"

@@ -1,4 +1,3 @@
-# Shared NixOS baseline, including home-manager wiring.
 { inputs, config, ... }:
 
 {

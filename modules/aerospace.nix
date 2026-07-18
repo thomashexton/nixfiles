@@ -1,13 +1,7 @@
 {
-  darwin.personal.homebrew = {
-    taps = [ "nikitabobko/tap" ];
-    casks = [ "aerospace" ];
-  };
-
-  home.darwinPersonal = {
+  darwin.base.home-manager.users.thomashexton = {
     programs.aerospace = {
       enable = true;
-      package = null;
       launchd.enable = false;
       userSettings = {
         after-login-command = [ ];

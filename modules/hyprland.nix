@@ -1,10 +1,3 @@
-# Hyprland desktop and its Home Manager user experience.
-#
-# TEMPORARY UPSTREAM CAVEAT:
-# Hyprland InputCapture and XDPH support have merged, but the released/stable
-# Nix packages do not yet contain a matching pair. flake.nix therefore pins
-# Hyprland and overrides its nested XDPH input. See README.md for the exact
-# upstream state, safe rollout procedure, and removal criteria.
 { config, inputs, ... }:
 
 let
@@ -26,9 +19,7 @@ in
     {
       home-manager.users.thomashexton.imports = [ hyprlandHome ];
 
-      # Use the compositor and portal built together by Hyprland's flake. XDPH
-      # warns against consuming its flake directly because the two projects
-      # have a circular build relationship.
+      # XDPH requires the compositor and portal built together by Hyprland's flake.
       programs.hyprland = {
         enable = true;
         package = hyprlandPackages.hyprland;
@@ -44,9 +35,7 @@ in
         package32 = hyprlandNixpkgs.pkgsi686Linux.mesa;
       };
 
-      # Preserve the normal NixOS cache and append Hyprland's official cache.
-      # The first build still needs the command-line cache flags documented in
-      # README.md because these daemon settings are not active until boot.
+      # These daemon settings take effect only after activation; README covers first boot.
       nix.settings = {
         substituters = lib.mkAfter [ "https://hyprland.cachix.org" ];
         trusted-public-keys = lib.mkAfter [
@@ -71,7 +60,7 @@ in
         fuzzel
         ghostty
         hyprpolkitagent
-        kdePackages.dolphin # Keep the file manager; revisit after settling into Hyprland.
+        kdePackages.dolphin
         pavucontrol
         playerctl
         wdisplays
@@ -90,8 +79,7 @@ in
         inputs.zen-browser.packages.${system}.twilight
       ];
 
-      # The NixOS module owns the exact compositor/portal package pair. Home
-      # Manager only writes the user configuration and session integration.
+      # Avoid a second Home Manager package pair; NixOS selects the matched pair above.
       wayland.windowManager.hyprland = {
         enable = true;
         package = null;

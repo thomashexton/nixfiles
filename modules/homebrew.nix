@@ -1,4 +1,3 @@
-# Shared Homebrew behavior. Feature modules own their taps, brews, and casks.
 {
   darwin.base = {
     homebrew = {
@@ -9,8 +8,6 @@
         upgrade = false;
         cleanup = "none";
       };
-
-      casks = [ "appcleaner" ];
     };
   };
 }

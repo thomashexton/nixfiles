@@ -14,7 +14,6 @@
   home.nixos =
     { pkgs, ... }:
     {
-      # Zed configuration managed declaratively
       xdg.configFile."zed/settings.json".source = (pkgs.formats.json { }).generate "zed-settings.json" {
         ui_font_size = 13;
         buffer_font_size = 13;

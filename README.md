@@ -25,28 +25,102 @@ NixOS and nix-darwin system configurations managed with flakes and Home Manager.
 | `mac-mini` | macOS | aarch64-darwin | Personal Mac Mini |
 | `macbook-pro` | macOS | aarch64-darwin | Work MacBook Pro |
 
-## Dendritic Architecture
+## Configuration Model
 
 The repository uses the [Dendritic pattern](https://github.com/mightyiam/dendritic)
-with flake-parts and import-tree. Lower-level modules are stored in three
-top-level configuration classes:
+with flake-parts and import-tree. Four kinds of names appear in the
+configuration, and they are not interchangeable:
 
-- `darwin.*` — nix-darwin system capabilities
-- `nixos.*` — NixOS system capabilities
-- `home.*` — Home Manager capabilities
+| Kind | Examples | Meaning |
+|------|----------|---------|
+| Evaluation platform | `aarch64-darwin`, `x86_64-linux` in `config.systems` | Platforms for which flake-parts evaluates `perSystem` outputs such as the formatter. This list does not create hosts or select profiles. |
+| Host output | `darwinConfigurations.mac-mini`, `nixosConfigurations.hxtn` | A complete machine configuration that can be built or activated. |
+| System profile | `darwin.base`, `nixos.gaming`, `nixos.plasma` | A reusable nix-darwin or NixOS module selected by a host output. It can import Home Manager profiles or contain tightly scoped user settings directly. |
+| Home profile | `home.base`, `home.personal`, `home.plasma` | A reusable per-user Home Manager module. Hosts do not select these directly; system profiles import them. |
 
-Features merge into a small set of stable profiles. A feature path describes
-what the file implements (for example, `claude/canva.nix`), while its target
-profile describes where that feature applies (for example,
-`home.professional`). System profiles compose the matching Home Manager
-profiles, so host files do not maintain per-feature Home Manager import lists.
+The build flows in one direction:
 
-- `mac-mini`: `darwin.base` + `darwin.workstation` + `darwin.personal`
-- `macbook-pro`: `darwin.base` + `darwin.workstation` +
-  `darwin.professional`
-- `hxtn`: `nixos.base` + `nixos.workstation` + `nixos.plasma` +
-  `nixos.personal` + `nixos.gaming` + `nixos.deskflowServer` +
-  `nixos.remoteAccess`
+```text
+feature modules -> profiles -> host output -> machine
+                       |
+                       +-> selected system profiles import or contain user settings
+```
+
+Every `.nix` file under `modules/` is automatically loaded as a peer module
+except paths containing `/_`. Feature files contribute settings to profiles,
+while files under `modules/hosts/` assemble complete host outputs by selecting
+system profiles. The generated `_hardware-configuration.nix` is explicitly
+imported by `hxtn`.
+
+Feature modules prefer nixpkgs packages for macOS applications. They use
+Homebrew only when nixpkgs does not support the application on macOS.
+
+Profile names are independent labels, not an inheritance hierarchy. For
+example, `darwin.personal` does not include `darwin.base`; `mac-mini` explicitly
+selects both. The only automatic composition is the Home Manager imports shown
+below.
+
+As a rule of thumb:
+
+- `base` contains essentials required on every host of that operating system.
+- `workstation` contains graphical and interactive workstation features.
+- `personal` and `professional` describe the machine's ownership or usage
+  context.
+- A feature file such as `cursor.nix` contributes configuration to whichever
+  of those profiles should receive that feature; the filename names the
+  feature, while the profile names define its scope.
+
+### Available system profiles
+
+#### nix-darwin profiles
+
+| Profile | Purpose | Home profiles imported | Selected by |
+|---------|---------|------------------------|-------------|
+| `darwin.base` | Foundation and system features required on every Mac | `home.base`, `home.darwin` | `mac-mini`, `macbook-pro` |
+| `darwin.workstation` | Interactive workstation and development applications | — | `mac-mini`, `macbook-pro` |
+| `darwin.personal` | Personal Mac applications, policy, and role-specific settings | `home.personal` | `mac-mini` |
+| `darwin.professional` | Professional/work role settings | `home.professional` | `macbook-pro` |
+
+#### NixOS profiles
+
+| Profile | Purpose | Home profiles imported | Selected by |
+|---------|---------|------------------------|-------------|
+| `nixos.base` | Foundation and system features required on every NixOS host | `home.base` | `hxtn` |
+| `nixos.workstation` | Interactive workstation, development, audio, graphics, and input support | `home.nixos` | `hxtn` |
+| `nixos.personal` | Personal-machine policy and user configuration | `home.personal` | `hxtn` |
+| `nixos.gaming` | Gaming applications, services, and launchers | `home.gaming` | `hxtn` |
+| `nixos.plasma` | KDE Plasma desktop session | `home.plasma` | `hxtn` currently |
+| `nixos.hyprland` | Staged alternative Hyprland desktop session | `home.hyprland` | Not currently selected |
+| `nixos.deskflowServer` | Always-available Deskflow server | — | `hxtn` |
+| `nixos.remoteAccess` | Remote SSH access | — | `hxtn` |
+
+### Available Home Manager profiles
+
+| Profile | Purpose | Imported through |
+|---------|---------|------------------|
+| `home.base` | User identity plus shared Claude Code and Codex packages | `darwin.base`, `nixos.base` |
+| `home.darwin` | User configuration shared by every Mac | `darwin.base` |
+| `home.personal` | Cross-platform personal configuration such as Alacritty, Git, tmux, and `just` | `darwin.personal`, `nixos.personal` |
+| `home.professional` | Work-specific user configuration and Canva Claude instructions | `darwin.professional` |
+| `home.nixos` | NixOS workstation user configuration, currently Zed settings | `nixos.workstation` |
+| `home.gaming` | Per-user gaming applications | `nixos.gaming` |
+| `home.plasma` | Plasma-session user configuration | `nixos.plasma` |
+| `home.hyprland` | Hyprland, Waybar, and session user configuration | `nixos.hyprland` |
+
+### Current host composition
+
+| Complete host output | Platform | System profiles selected | Home profiles reached |
+|----------------------|----------|--------------------------|-----------------------|
+| `darwinConfigurations.mac-mini` | `aarch64-darwin` | `darwin.base`, `darwin.workstation`, `darwin.personal` | `home.base`, `home.darwin`, `home.personal` |
+| `darwinConfigurations.macbook-pro` | `aarch64-darwin` | `darwin.base`, `darwin.workstation`, `darwin.professional` | `home.base`, `home.darwin`, `home.professional` |
+| `nixosConfigurations.hxtn` | `x86_64-linux` | `nixos.base`, `nixos.workstation`, `nixos.plasma`, `nixos.personal`, `nixos.gaming`, `nixos.deskflowServer`, `nixos.remoteAccess` | `home.base`, `home.nixos`, `home.plasma`, `home.personal`, `home.gaming` |
+
+The staged Hyprland change replaces `nixos.plasma` with `nixos.hyprland`; that
+also replaces `home.plasma` with `home.hyprland`.
+
+For an expanded explanation of loading and profile composition, see
+[`docs/module-loading.md`](docs/module-loading.md) or the interactive
+[`docs/architecture.html`](docs/architecture.html).
 
 ## Current State
 
@@ -180,6 +254,23 @@ standalone-Home-Manager target rather than another `nixosConfigurations` or
 
 ## Notes
 
+### Comment policy
+
+Comments are safety rails for changing code, not feature documentation. Keep a
+comment beside the implementation only when it explains a non-obvious
+constraint, compatibility requirement, or security decision that must remain
+synchronized with that code.
+
+Feature descriptions, configuration ownership, operational instructions, and
+temporary-workaround details belong in this README or in focused documentation
+linked from it. Do not add comments that restate names, narrate the following
+option, or preserve disabled code. A temporary implementation may carry a short
+pointer to its documented removal criteria.
+
+Content emitted by Nix follows the conventions of its target format rather
+than Nix's comment policy. Generated files, including the NixOS hardware
+configuration, retain their upstream warnings and comments.
+
 ### Config ownership
 
 This repo does not treat every file under `~/.config` or `~/.claude` as the
@@ -198,14 +289,18 @@ Use this rule:
 In practice, that means:
 
 - Typed Nix: `git`, `tmux`, `aerospace`
-- Store-backed raw files: `zsh`, `~/.claude/statusline-command.sh`, and the
-  Canva-specific `CLAUDE.md`
-- Out-of-store files: `~/.claude/settings.json`,
-  `~/.config/alacritty/alacritty.toml`, and Karabiner's JSON configuration
+- Store-backed raw files: `zsh` and the Canva-specific `CLAUDE.md`
+- Out-of-store files: `~/.config/alacritty/alacritty.toml` and Karabiner's JSON
+  configuration
 
-Codex is split across its native configuration layers: shared MCP definitions
-are declared in `/etc/codex/config.toml`, while Codex owns the writable
-`~/.codex/config.toml` for per-device settings and UI state.
+Claude Code and Codex follow the same ownership rule: this repo installs each
+CLI through `home.base`, declares shared system configuration, and leaves the
+tool's per-device user configuration writable.
+
+| Tool | System-managed configuration | Tool-owned user configuration |
+|------|------------------------------|-------------------------------|
+| Claude Code | The shared attribution opt-out is installed on every host through Claude Code's managed-settings layer. | `~/.claude/settings.json` contains personal UI state and is intentionally not tracked by this repo. |
+| Codex | Shared MCP definitions are declared in `/etc/codex/config.toml` on every host. | `~/.codex/config.toml` contains per-device settings and UI state. |
 
 The important distinction is config versus state:
 
@@ -219,6 +314,12 @@ to a real file in `~/nixfiles`, not to `/nix/store`. That means edits at the
 home-directory path, including writes made by the app itself, update the repo
 file directly. Home Manager manages the symlink; the repo file remains the
 source of truth.
+
+Karabiner's tracked JSON maps Caps Lock to Left Control on every keyboard and
+swaps Right Option with Right Command on the MX Keys Mini connected through
+the Logi Bolt receiver (vendor `1133`, product `50504`). Its UI writes through
+the out-of-store symlink, so changing remaps there overwrites the tracked JSON
+directly.
 
 ### Home Manager in this repo
 

@@ -11,7 +11,8 @@ list of feature files. There are two distinct operations:
    all of them to flake-parts as peer modules.
 2. Those peer modules merge definitions into deferred capability profiles.
    A host constructor selects profiles, and the selected system profiles then
-   import the relevant Home Manager profiles.
+   import reusable Home Manager profiles or contain tightly scoped user
+   settings directly.
 
 An arrow labelled **discovers** below means flake-parts module discovery. An
 arrow labelled **selects** or **HM imports** means Nix module composition.
@@ -71,7 +72,6 @@ flowchart LR
         DB -->|"HM imports"| HB["home.base"]
         DB -->|"HM imports"| HD["home.darwin"]
         DP -->|"HM imports"| HP["home.personal"]
-        DP -->|"HM imports"| HDP["home.darwinPersonal"]
         DPro -->|"HM imports"| HPro["home.professional"]
     end
 
@@ -94,6 +94,10 @@ flowchart LR
     end
 ```
 
+`darwin.personal` also contains its Mac-only user settings directly below
+`home-manager.users.thomashexton`. They remain scoped to the personal Mac
+profile without introducing another `home.*` profile or graph node.
+
 `nixos.hyprland` is an alternative to `nixos.plasma`, not an additional profile
 in the current `hxtn` build. If that one selection changes, it imports
 `home.hyprland` instead of `home.plasma`.
@@ -105,13 +109,13 @@ the profile is not owned by whichever file happens to appear first.
 
 | Profile | Contributing files |
 | --- | --- |
-| `darwin.base` | `base/darwin.nix`, `base/unstable-overlay.nix`, `codex/codex.nix`, `developer-tools.nix`, `deskflow.nix`, `homebrew.nix`, `karabiner/karabiner.nix`, `shell.nix` |
+| `darwin.base` | `aerospace.nix`, `appcleaner.nix`, `base/darwin.nix`, `base/unstable-overlay.nix`, `codex/codex.nix`, `developer-tools.nix`, `deskflow.nix`, `homebrew.nix`, `karabiner/karabiner.nix`, `shell.nix` |
 | `darwin.workstation` | `alacritty/alacritty.nix`, `fonts.nix`, `git.nix`, `tmux.nix`, `zed.nix` |
-| `darwin.personal` | `base/darwin.nix`, `aerospace.nix`, `mac-personal-apps.nix` |
+| `darwin.personal` | `1password.nix`, `base/darwin.nix`, `claude/claude.nix`, `cursor.nix`, `dropbox.nix`, `metadatics.nix`, `streamrip.nix`, `zsh.nix` |
 | `darwin.professional` | `base/darwin.nix` |
 | `nixos.base` | `base/nixos.nix`, `base/unstable-overlay.nix`, `codex/codex.nix`, `shell.nix` |
 | `nixos.workstation` | `base/nixos.nix`, `alacritty/alacritty.nix`, `audio.nix`, `developer-tools.nix`, `fonts.nix`, `git.nix`, `graphics.nix`, `keyboard.nix`, `zed.nix` |
-| `nixos.personal` | `base/nixos.nix` |
+| `nixos.personal` | `1password.nix`, `base/nixos.nix`, `claude/claude.nix`, `cursor.nix`, `dropbox.nix` |
 | `nixos.gaming` | `base/nixos.nix`, `gaming.nix` |
 | `nixos.plasma` | `plasma.nix` |
 | `nixos.hyprland` | `hyprland.nix` |
@@ -119,7 +123,6 @@ the profile is not owned by whichever file happens to appear first.
 | `nixos.remoteAccess` | `remote-access.nix` |
 | `home.base` | `base/home.nix`, `claude/claude.nix`, `codex/codex.nix` |
 | `home.darwin` | `karabiner/karabiner.nix` |
-| `home.darwinPersonal` | `aerospace.nix`, `streamrip.nix`, `zsh.nix` |
 | `home.nixos` | `zed.nix` |
 | `home.personal` | `alacritty/alacritty.nix`, `developer-tools.nix`, `git.nix`, `tmux.nix` |
 | `home.professional` | `claude/canva.nix` |

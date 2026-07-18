@@ -1,27 +1,21 @@
 {
-  home.darwinPersonal = {
+  darwin.personal.home-manager.users.thomashexton = {
     xdg.configFile."zim/.zimrc" = {
       force = true;
       text = ''
-        # Core functionality
         zmodule environment
         zmodule input
         zmodule utility
         zmodule git
 
-        # Prompt dependencies and prompt
+        # Load prompt dependencies before asciiship.
         zmodule duration-info
         zmodule git-info
         zmodule asciiship
 
-        # Completion
-        #zmodule zsh-users/zsh-completions --fpath src
-        #zmodule completion
-
-        # Additional tools
         zmodule https://github.com/agkozak/zsh-z
 
-        # Modules that must be initialized last
+        # These modules must be initialized last.
         zmodule zsh-users/zsh-syntax-highlighting
         zmodule zsh-users/zsh-history-substring-search
         zmodule zsh-users/zsh-autosuggestions
@@ -91,11 +85,6 @@
     xdg.configFile."zsh/custom/zim.zsh" = {
       force = true;
       text = ''
-        # Start configuration added by Zim install {{{
-        #
-        # User configuration sourced by interactive shells
-        #
-
         setopt HIST_IGNORE_ALL_DUPS
 
         bindkey -e
@@ -130,8 +119,6 @@
 
         unalias gt gtl gts gtv gtx 2>/dev/null
         unalias gh ghw 2>/dev/null
-
-        # }}} End configuration added by Zim install
       '';
     };
   };

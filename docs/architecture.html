@@ -71,7 +71,6 @@
     color: var(--muted); margin-bottom: 0.35rem;
   }
 
-  /* pipeline strip */
   .pipeline { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.5rem; margin-top: 1.4rem; counter-reset: s; }
   @media (max-width: 760px) { .pipeline { grid-template-columns: 1fr; } }
   .pstep { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 0.75rem 0.85rem; }
@@ -84,7 +83,6 @@
   .pstep h4 { margin: 0 0 0.2rem; font-size: 0.83rem; }
   .pstep p { margin: 0; font-size: 0.75rem; color: var(--muted); }
 
-  /* class legend */
   .classes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.9rem; margin-top: 1.3rem; }
   @media (max-width: 760px) { .classes { grid-template-columns: 1fr; } }
   .classcard { border-radius: 10px; padding: 0.85rem 1rem; border: 1px solid var(--line); background: var(--surface); border-top: 3px solid; }
@@ -102,7 +100,6 @@
     border-radius: 8px; background: var(--surface); padding: 0.8rem 1.1rem; font-size: 0.95rem; max-width: none;
   }
 
-  /* host tabs */
   .tabs { display: flex; gap: 0.4rem; margin: 1.3rem 0 1.1rem; flex-wrap: wrap; }
   .tab {
     font: inherit; font-size: 0.88rem; font-weight: 600; cursor: pointer;
@@ -113,7 +110,6 @@
   .tab.on { background: var(--accent); border-color: var(--accent); color: #fff; }
   .tab:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
-  /* explorer */
   .flow { display: grid; grid-template-columns: 1fr 1.15fr 1.15fr; gap: 1rem; align-items: start; }
   @media (max-width: 820px) { .flow { grid-template-columns: 1fr; } }
   .col h5 {
@@ -145,7 +141,6 @@
   .swap input { accent-color: var(--accent); }
   .hint { font-size: 0.78rem; color: var(--muted); margin-top: 0.4rem; }
 
-  /* matrix */
   .matrix-scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); margin-top: 1.1rem; }
   table.matrix { border-collapse: collapse; width: 100%; font-size: 0.78rem; }
   .matrix th, .matrix td { padding: 0.34rem 0.5rem; text-align: center; border-bottom: 1px solid var(--line); }
@@ -169,7 +164,6 @@
   .matrix td.litcol, .matrix th.litcol { background: var(--lit); }
   .matrix tfoot td { font-size: 0.72rem; color: var(--muted); text-align: left; padding: 0.5rem 0.6rem; border: 0; }
 
-  /* where-do-i-put-it */
   .decision { border: 1px solid var(--line); border-radius: 10px; background: var(--surface); padding: 1rem 1.3rem; margin-top: 1.2rem; }
   .decision ol { margin: 0.4rem 0 0; padding-left: 1.2rem; font-size: 0.92rem; }
   .decision li { margin: 0.45rem 0; }
@@ -208,7 +202,7 @@
     <div class="classcard nixos"><h4><code>nixos.*</code></h4><p>Linux <em>system</em> layer: boot, services, desktop, gaming. Selected by hxtn's host file.</p></div>
     <div class="classcard home"><h4><code>home.*</code></h4><p>Your <em>user</em> layer (home-manager): dotfiles, per-user packages. <strong>Never selected by hosts directly.</strong></p></div>
   </div>
-  <div class="rule"><strong>The one rule:</strong> hosts only ever select <em>system</em> profiles. Each system profile then imports the matching <code>home.*</code> profiles into <code>home-manager.users.thomashexton</code>. So picking <code>darwin.personal</code> silently brings <code>home.personal</code> + <code>home.darwinPersonal</code> with it — that wiring lives in <code>base/darwin.nix</code> and <code>base/nixos.nix</code> (and inside <code>plasma.nix</code>/<code>hyprland.nix</code> for the desktops).</div>
+  <div class="rule"><strong>The one rule:</strong> hosts only ever select <em>system</em> profiles. Each system profile can import reusable <code>home.*</code> profiles into <code>home-manager.users.thomashexton</code> or define tightly scoped user settings there directly. <code>darwin.base</code> brings Aerospace to both Macs; <code>darwin.personal</code> imports <code>home.personal</code> and adds the Mac-only Zsh and streamrip settings.</div>
 </section>
 
 <section>
@@ -234,8 +228,8 @@
   <h2>"Where do I put…?"</h2>
   <div class="decision">
     <ol>
-      <li><strong>A new app/tool</strong> → one new file in <code>modules/</code>. Inside it, assign to the profile(s) matching who should get it: every machine → <code>*.base</code>; dev machines → <code>*.workstation</code>; personal life → <code>*.personal</code> / <code>home.darwinPersonal</code>; work → <code>home.professional</code>.</li>
-      <li><strong>System-level vs user-level?</strong> Binary on PATH for everyone → <code>darwin.*</code>/<code>nixos.*</code> <code>environment.systemPackages</code>. Dotfiles or per-user packages → the matching <code>home.*</code> in the same file.</li>
+      <li><strong>A new app/tool</strong> → one new file in <code>modules/</code>. Inside it, assign to the profile(s) matching who should get it: every machine → <code>*.base</code>; dev machines → <code>*.workstation</code>; personal life → <code>*.personal</code>; work → <code>home.professional</code>. Put personal Mac-only user settings below <code>darwin.personal.home-manager.users.thomashexton</code>.</li>
+      <li><strong>System-level vs user-level?</strong> Binary on PATH for everyone → <code>darwin.*</code>/<code>nixos.*</code> <code>environment.systemPackages</code>. Reusable dotfiles or per-user packages → the matching <code>home.*</code>; settings specific to one system profile → its nested <code>home-manager.users</code> configuration.</li>
       <li><strong>Give an existing feature to another machine</strong> → usually nothing to edit in the feature; change which <em>profile</em> it assigns to, or add the profile to the host's select-list.</li>
       <li><strong>A whole new capability class</strong> (like gaming was) → invent a profile name, wire its <code>home.*</code> import in <code>base/darwin.nix</code> or <code>base/nixos.nix</code>, select it from a host.</li>
       <li><strong>Machine-specific one-offs</strong> (hostname, boot, hardware) → the literal block at the bottom of that host's file. Nowhere else.</li>
@@ -259,10 +253,10 @@
 (function () {
   "use strict";
 
-  // ---- data (extracted from the repo; verify with: grep -oE '^(darwin|nixos|home)\.[A-Za-z]+' modules -r) ----
-  var WIRES = { // system profile -> home profiles it imports
+  // Keep these static maps synchronized with modules/ when profiles change.
+  var SYSTEM_HOME_IMPORTS = {
     "darwin.base": ["home.base", "home.darwin"],
-    "darwin.personal": ["home.personal", "home.darwinPersonal"],
+    "darwin.personal": ["home.personal"],
     "darwin.professional": ["home.professional"],
     "nixos.base": ["home.base"],
     "nixos.workstation": ["home.nixos"],
@@ -279,12 +273,12 @@
     "nixos.plasma": "KDE desktop", "nixos.hyprland": "Hyprland desktop (alt)",
     "nixos.deskflowServer": "KVM server role", "nixos.remoteAccess": "SSH",
     "home.base": "always-on dotfiles", "home.darwin": "mac-only dotfiles",
-    "home.personal": "personal dotfiles", "home.darwinPersonal": "personal mac dotfiles",
+    "home.personal": "personal dotfiles",
     "home.professional": "work dotfiles", "home.nixos": "linux-only dotfiles",
     "home.gaming": "gaming user bits", "home.plasma": "KDE user bits", "home.hyprland": "Hyprland user bits"
   };
   var HOSTS = {
-    "mac-mini": { cls: "darwin", literal: "hostname · computerName · stateVersion · extra homebrew (1password, cursor…)",
+    "mac-mini": { cls: "darwin", literal: "hostname · computerName · stateVersion",
       sys: ["darwin.base", "darwin.workstation", "darwin.personal"] },
     "macbook-pro": { cls: "darwin", literal: "hostname · computerName · stateVersion",
       sys: ["darwin.base", "darwin.workstation", "darwin.professional"] },
@@ -296,11 +290,12 @@
     ["base/nixos.nix",         ["nixos.base","nixos.workstation","nixos.personal","nixos.gaming"]],
     ["base/home.nix",          ["home.base"]],
     ["base/unstable-overlay.nix",["darwin.base","nixos.base"]],
+    ["appcleaner.nix",          ["darwin.base"]],
     ["shell.nix",              ["darwin.base","nixos.base"]],
     ["homebrew.nix",           ["darwin.base"]],
     ["developer-tools.nix",    ["darwin.base","nixos.workstation","home.personal"]],
     ["codex/codex.nix",        ["darwin.base","nixos.base","home.base"]],
-    ["claude/claude.nix",      ["home.base"]],
+    ["claude/claude.nix",      ["darwin.personal","nixos.personal","home.base"]],
     ["claude/canva.nix",       ["home.professional"]],
     ["karabiner/karabiner.nix",["darwin.base","home.darwin"]],
     ["deskflow.nix",           ["darwin.base","nixos.deskflowServer"]],
@@ -309,10 +304,13 @@
     ["tmux.nix",               ["darwin.workstation","home.personal"]],
     ["zed.nix",                ["darwin.workstation","nixos.workstation","home.nixos"]],
     ["fonts.nix",              ["darwin.workstation","nixos.workstation"]],
-    ["aerospace.nix",          ["darwin.personal","home.darwinPersonal"]],
-    ["mac-personal-apps.nix",  ["darwin.personal"]],
-    ["zsh.nix",                ["home.darwinPersonal"]],
-    ["streamrip.nix",          ["home.darwinPersonal"]],
+    ["1password.nix",          ["darwin.personal","nixos.personal"]],
+    ["aerospace.nix",          ["darwin.base"]],
+    ["cursor.nix",             ["darwin.personal","nixos.personal"]],
+    ["dropbox.nix",            ["darwin.personal","nixos.personal"]],
+    ["metadatics.nix",         ["darwin.personal"]],
+    ["zsh.nix",                ["darwin.personal"]],
+    ["streamrip.nix",          ["darwin.personal"]],
     ["audio.nix",              ["nixos.workstation"]],
     ["graphics.nix",           ["nixos.workstation"]],
     ["keyboard.nix",           ["nixos.workstation"]],
@@ -337,9 +335,13 @@
   function homeProfiles(sys) {
     var out = [], seen = {};
     sys.forEach(function (s) {
-      (WIRES[s] || []).forEach(function (h) {
+      (SYSTEM_HOME_IMPORTS[s] || []).forEach(function (h) {
         if (!seen[h]) { seen[h] = s; out.push({ name: h, via: [s] }); }
-        else { /* find and append */ out.forEach(function (o) { if (o.name === h) o.via.push(s); }); }
+        else {
+          out.forEach(function (o) {
+            if (o.name === h) o.via.push(s);
+          });
+        }
       });
     });
     return out;
@@ -349,35 +351,30 @@
     var host = HOSTS[current], sys = sysProfiles(), homes = homeProfiles(sys);
     $("swaprow").hidden = current !== "hxtn";
 
-    // tabs
     $("tabs").innerHTML = Object.keys(HOSTS).map(function (h) {
       return '<button class="tab' + (h === current ? " on" : "") + '" role="tab" aria-selected="' + (h === current) + '" data-h="' + h + '">' + h + "</button>";
     }).join("");
 
-    // host column
     $("hostcol").innerHTML =
       '<div class="card host"><span class="nm">' + current + '</span>' +
       '<span class="why">modules/hosts/' + (current === "hxtn" ? "hxtn/hxtn.nix" : current + ".nix") + "</span></div>" +
       '<div class="card lit"><span class="nm">literal block</span><span class="why">' + esc(host.literal) + "</span></div>";
 
-    // system column
     $("syscol").innerHTML = sys.map(function (s) {
       return '<div class="card sys ' + clsOf(s) + '" data-p="' + s + '"><span class="nm">' + s + '</span><span class="why">' + (WHY[s] || "") + "</span></div>";
     }).join("");
 
-    // home column
     $("homecol").innerHTML = homes.length ? homes.map(function (h) {
       return '<div class="card hm" data-via="' + h.via.join(" ") + '"><span class="nm">' + h.name + '</span><span class="why">via ' + h.via.join(", ") + "</span></div>";
     }).join("") : '<div class="card ghost"><span class="why">none</span></div>';
 
     $("flowhint").textContent =
       current === "macbook-pro"
-        ? "Note the asymmetry: darwin.workstation imports no home profile — workstation tools are system-level on the Macs. And no darwin.personal here: no aerospace, no zsh extras, no streamrip on the work laptop."
+        ? "The work Mac gets Aerospace through darwin.base. It does not select darwin.personal, so it gets no personal Zsh extras or streamrip."
         : current === "hxtn"
           ? "hxtn selects seven profiles. The desktop is a genuine choice: plasma and hyprland are parallel profiles — flip the checkbox to preview the swap."
-          : "mac-mini = base + workstation + personal. The personal profile is what brings aerospace, zim/zsh, and streamrip — the work MacBook doesn't get those.";
+          : "mac-mini = base + workstation + personal. Base brings Aerospace to both Macs; personal adds zim/zsh and streamrip only here.";
 
-    // matrix
     var cols = sys.concat(homes.map(function (h) { return h.name; }));
     var head = "<thead><tr><th></th>" + cols.map(function (c) {
       return '<th class="' + clsOf(c) + '" data-col="' + c + '">' + c.replace(".", ".<br>") + "</th>";
@@ -395,7 +392,6 @@
     $("matrix").innerHTML = head + body + foot;
   }
 
-  // interactions
   document.addEventListener("click", function (e) {
     var t = e.target.closest(".tab");
     if (t) { current = t.getAttribute("data-h"); render(); }

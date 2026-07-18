@@ -1,4 +1,3 @@
-# Gaming stack for the NixOS workstation.
 { inputs, ... }:
 
 {

@@ -1,4 +1,3 @@
-# Low-latency desktop audio for NixOS workstations.
 {
   nixos.workstation =
     { pkgs, ... }:

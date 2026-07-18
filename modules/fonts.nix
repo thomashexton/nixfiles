@@ -1,4 +1,3 @@
-# Fonts used by terminals and editors on configured desktops.
 let
   nerdFonts = pkgs: [
     pkgs.nerd-fonts.hack

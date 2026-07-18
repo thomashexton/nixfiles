@@ -1,5 +1,3 @@
-# Declares the dendritic capability profiles. Feature files merge lower-level
-# modules into these profiles; host files only select the capabilities they use.
 { lib, flake-parts-lib, ... }:
 
 let

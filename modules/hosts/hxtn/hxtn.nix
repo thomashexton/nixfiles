@@ -6,7 +6,6 @@
     modules = [
       config.nixos.base
       config.nixos.workstation
-      # Swap this one line to config.nixos.hyprland for the first Hyprland boot.
       config.nixos.plasma
       config.nixos.personal
       config.nixos.gaming

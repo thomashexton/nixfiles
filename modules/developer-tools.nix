@@ -1,4 +1,3 @@
-# Interactive development tools shared by the configured desktops.
 {
   darwin.base =
     { pkgs, ... }:

@@ -1,4 +1,3 @@
-# Graphics tooling for the AMD NixOS workstation.
 {
   nixos.workstation =
     { pkgs, ... }:

@@ -1,4 +1,3 @@
-# Shared nix-darwin baseline for both Macs, including home-manager wiring.
 { inputs, config, ... }:
 
 {
@@ -27,10 +26,7 @@
       ];
     };
 
-  darwin.personal.home-manager.users.thomashexton.imports = [
-    config.home.personal
-    config.home.darwinPersonal
-  ];
+  darwin.personal.home-manager.users.thomashexton.imports = [ config.home.personal ];
 
   darwin.professional.home-manager.users.thomashexton.imports = [ config.home.professional ];
 }

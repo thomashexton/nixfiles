@@ -1,4 +1,3 @@
-# Hardened SSH access for remotely managed NixOS machines.
 {
   nixos.remoteAccess = {
     services.openssh = {

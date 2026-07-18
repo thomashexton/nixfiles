@@ -1,4 +1,3 @@
-# KDE Plasma desktop and its Home Manager user experience.
 { config, inputs, ... }:
 
 {

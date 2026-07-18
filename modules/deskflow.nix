@@ -12,17 +12,15 @@
         pkgs.qt6.qtsvg # Required for Deskflow system tray icon rendering
       ];
 
-      # Open the Deskflow port (24800) for incoming client connections
       networking.firewall.allowedTCPPorts = [ 24800 ];
       networking.interfaces.enp14s0.wakeOnLan.enable = true;
 
-      # This machine is the always-on Deskflow server.
+      # Keep the Deskflow server reachable when unattended.
       systemd.targets.sleep.enable = false;
       systemd.targets.suspend.enable = false;
       systemd.targets.hibernate.enable = false;
       systemd.targets.hybrid-sleep.enable = false;
 
-      # Deskflow server config (screen layout)
       environment.etc."Deskflow/deskflow-server.conf".text = ''
         section: screens
             hxtn:
@@ -34,12 +32,6 @@
                 up = macbook-pro
             macbook-pro:
                 down = hxtn
-        end
-
-        section: options
-            # keystroke(F4) = switchToScreen(hxtn)
-            # keystroke(F5) = switchToScreen(macbook-pro)
-            # keystroke(super+shift+l) = lockCursorToScreen(toggle)
         end
       '';
     };

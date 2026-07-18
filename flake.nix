@@ -12,9 +12,7 @@
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
     home-manager.url = "github:nix-community/home-manager/release-25.11";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
-    # TEMPORARY: InputCapture support has merged upstream but is not yet in the
-    # Hyprland/XDPH pair shipped by nixpkgs 25.11. Keep these exact revisions in
-    # sync with the explanation and removal criteria in README.md.
+    # Temporary compatibility pins; see README.md#large-temporary-upstream-caveat.
     hyprland = {
       url = "github:hyprwm/Hyprland/466f6bc53f44c42fd7d8f8c01eeaec112112aefd";
       inputs.xdph.url = "github:hyprwm/xdg-desktop-portal-hyprland/0e832b50ecc49d4bae01a29845c1b3fafc5c5c99";
@@ -26,7 +24,5 @@
     };
   };
 
-  # Dendritic pattern: every .nix file under modules/ is a flake-parts module,
-  # auto-imported by import-tree (paths containing "/_" are skipped).
   outputs = inputs: inputs.flake-parts.lib.mkFlake { inherit inputs; } (inputs.import-tree ./modules);
 }
