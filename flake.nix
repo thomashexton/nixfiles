@@ -4,6 +4,9 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    flake-parts.url = "github:hercules-ci/flake-parts";
+    flake-parts.inputs.nixpkgs-lib.follows = "nixpkgs";
+    import-tree.url = "github:vic/import-tree";
     determinate.url = "github:DeterminateSystems/determinate";
     nix-darwin.url = "github:nix-darwin/nix-darwin/nix-darwin-25.11";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
@@ -16,77 +19,8 @@
     };
   };
 
-  outputs = { nixpkgs, nixpkgs-unstable, determinate, nix-darwin, home-manager, nix-citizen, zen-browser, ... }:
-    let
-      unstable-overlay = _final: prev:
-        let
-          unstablePkgs = import nixpkgs-unstable {
-            system = prev.stdenv.hostPlatform.system;
-            config.allowUnfree = true;
-          };
-        in {
-          unstable = unstablePkgs;
-        };
-    in {
-    # NixOS configuration for desktop
-    nixosConfigurations = {
-      hxtn = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
-        modules = [
-          {
-            nixpkgs.overlays = [
-              (_final: prev: { unixodbc = prev.unixODBC; })
-              unstable-overlay
-            ];
-          }
-          ./hosts/hxtn/configuration.nix
-          nix-citizen.nixosModules.default
-          home-manager.nixosModules.home-manager
-          {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            home-manager.users.thomashexton = import ./hosts/hxtn/home.nix;
-            home-manager.extraSpecialArgs = { inherit zen-browser; };
-          }
-        ];
-      };
-    };
-
-    # Darwin configurations for macOS
-    darwinConfigurations = {
-      macbook-pro = nix-darwin.lib.darwinSystem {
-        system = "aarch64-darwin";
-        modules = [
-          { nixpkgs.overlays = [ unstable-overlay ]; }
-          determinate.darwinModules.default
-          ./hosts/macbook-pro/configuration.nix
-          home-manager.darwinModules.home-manager
-          {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            home-manager.backupFileExtension = "pre-nix";
-            home-manager.users.thomashexton = import ./hosts/macbook-pro/home.nix;
-            home-manager.extraSpecialArgs = { inherit zen-browser; };
-          }
-        ];
-      };
-
-      mac-mini = nix-darwin.lib.darwinSystem {
-        system = "aarch64-darwin";
-        modules = [
-          { nixpkgs.overlays = [ unstable-overlay ]; }
-          determinate.darwinModules.default
-          ./hosts/mac-mini/configuration.nix
-          home-manager.darwinModules.home-manager
-          {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            home-manager.backupFileExtension = "pre-nix";
-            home-manager.users.thomashexton = import ./hosts/mac-mini/home.nix;
-            home-manager.extraSpecialArgs = { inherit zen-browser; };
-          }
-        ];
-      };
-    };
-  };
+  # Dendritic pattern: every .nix file under modules/ is a flake-parts module,
+  # auto-imported by import-tree (paths containing "/_" are skipped).
+  outputs = inputs:
+    inputs.flake-parts.lib.mkFlake { inherit inputs; } (inputs.import-tree ./modules);
 }
