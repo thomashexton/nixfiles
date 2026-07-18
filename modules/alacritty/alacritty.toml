@@ -21,13 +21,13 @@ family = "JetBrainsMono Nerd Font"
 style = "Regular"
 
 [window]
-decorations = "buttonless"
 opacity = 1.0
 
 [window.padding]
 x = 20
 
 [general]
+import = ["~/.config/alacritty/decorations.toml"]
 live_config_reload = true
 
 [[keyboard.bindings]]

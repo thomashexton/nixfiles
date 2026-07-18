@@ -3,3 +3,6 @@ model_reasoning_effort = "high"
 
 [projects."/Users/thomashexton/nixfiles"]
 trust_level = "trusted"
+
+[desktop]
+conversationDetailMode = "STEPS_COMMANDS"
