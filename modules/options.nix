@@ -13,9 +13,9 @@ let
 in
 {
   options = {
-    home = deferredProfiles "Home Manager capability profiles.";
     darwin = deferredProfiles "nix-darwin capability profiles.";
     nixos = deferredProfiles "NixOS capability profiles.";
+    home = deferredProfiles "Home Manager capability profiles.";
 
     flake = flake-parts-lib.mkSubmoduleOptions {
       # flake-parts core declares nixosConfigurations but not

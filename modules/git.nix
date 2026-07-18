@@ -1,4 +1,16 @@
 {
+  darwin.workstation =
+    { pkgs, ... }:
+    {
+      environment.systemPackages = [ pkgs.git ];
+    };
+
+  nixos.workstation =
+    { pkgs, ... }:
+    {
+      environment.systemPackages = [ pkgs.git ];
+    };
+
   home.personal = {
     programs.git = {
       enable = true;
@@ -45,16 +57,4 @@
     xdg.configFile."git/config".force = true;
     xdg.configFile."git/ignore".force = true;
   };
-
-  darwin.workstation =
-    { pkgs, ... }:
-    {
-      environment.systemPackages = [ pkgs.git ];
-    };
-
-  nixos.workstation =
-    { pkgs, ... }:
-    {
-      environment.systemPackages = [ pkgs.git ];
-    };
 }

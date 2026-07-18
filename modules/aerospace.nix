@@ -1,4 +1,9 @@
 {
+  darwin.personal.homebrew = {
+    taps = [ "nikitabobko/tap" ];
+    casks = [ "aerospace" ];
+  };
+
   home.darwinPersonal = {
     programs.aerospace = {
       enable = true;
@@ -177,10 +182,5 @@
         ];
       };
     };
-  };
-
-  darwin.personal.homebrew = {
-    taps = [ "nikitabobko/tap" ];
-    casks = [ "aerospace" ];
   };
 }

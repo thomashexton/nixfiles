@@ -1,4 +1,6 @@
 {
+  darwin.base.homebrew.casks = [ "karabiner-elements" ];
+
   # Karabiner-Elements owns all keyboard remapping on macOS:
   #   - Caps Lock -> Left Control (all keyboards)
   #   - Right Option <-> Right Command, MX Keys Mini only (Logi Bolt receiver,
@@ -13,6 +15,4 @@
         source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/nixfiles/modules/karabiner/karabiner.json";
       };
     };
-
-  darwin.base.homebrew.casks = [ "karabiner-elements" ];
 }

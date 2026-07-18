@@ -1,4 +1,16 @@
 {
+  darwin.workstation =
+    { pkgs, ... }:
+    {
+      environment.systemPackages = [ pkgs.zed-editor ];
+    };
+
+  nixos.workstation =
+    { pkgs, ... }:
+    {
+      environment.systemPackages = [ pkgs.zed-editor ];
+    };
+
   home.nixos =
     { pkgs, ... }:
     {
@@ -30,17 +42,5 @@
           };
         };
       };
-    };
-
-  darwin.workstation =
-    { pkgs, ... }:
-    {
-      environment.systemPackages = [ pkgs.zed-editor ];
-    };
-
-  nixos.workstation =
-    { pkgs, ... }:
-    {
-      environment.systemPackages = [ pkgs.zed-editor ];
     };
 }

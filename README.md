@@ -31,9 +31,9 @@ The repository uses the [Dendritic pattern](https://github.com/mightyiam/dendrit
 with flake-parts and import-tree. Lower-level modules are stored in three
 top-level configuration classes:
 
-- `home.*` — Home Manager capabilities
 - `darwin.*` — nix-darwin system capabilities
 - `nixos.*` — NixOS system capabilities
+- `home.*` — Home Manager capabilities
 
 Features merge into a small set of stable profiles. A feature path describes
 what the file implements (for example, `claude/canva.nix`), while its target

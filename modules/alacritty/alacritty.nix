@@ -1,4 +1,18 @@
 {
+  darwin.workstation =
+    { pkgs, ... }:
+    {
+      # Keep the GUI application system-wide on both Macs. The user
+      # configuration is enabled by the desktop home profile.
+      environment.systemPackages = [ pkgs.alacritty ];
+    };
+
+  nixos.workstation =
+    { pkgs, ... }:
+    {
+      environment.systemPackages = [ pkgs.alacritty ];
+    };
+
   home.personal =
     { config, pkgs, ... }:
     {
@@ -14,19 +28,5 @@
         [window]
         decorations = "${if pkgs.stdenv.hostPlatform.isDarwin then "buttonless" else "full"}"
       '';
-    };
-
-  darwin.workstation =
-    { pkgs, ... }:
-    {
-      # Keep the GUI application system-wide on both Macs. The user
-      # configuration is enabled by the desktop home profile.
-      environment.systemPackages = [ pkgs.alacritty ];
-    };
-
-  nixos.workstation =
-    { pkgs, ... }:
-    {
-      environment.systemPackages = [ pkgs.alacritty ];
     };
 }

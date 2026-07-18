@@ -1,4 +1,8 @@
 {
+  # Keep shared MCP definitions below Codex's writable, per-device user config.
+  darwin.base.environment.etc."codex/config.toml".source = ./config.toml;
+  nixos.base.environment.etc."codex/config.toml".source = ./config.toml;
+
   home.base =
     { pkgs, ... }:
     {
@@ -7,8 +11,4 @@
         pkgs.mcp-nixos
       ];
     };
-
-  # Keep shared MCP definitions below Codex's writable, per-device user config.
-  darwin.base.environment.etc."codex/config.toml".source = ./config.toml;
-  nixos.base.environment.etc."codex/config.toml".source = ./config.toml;
 }

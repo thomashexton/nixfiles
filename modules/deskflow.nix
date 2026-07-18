@@ -1,4 +1,9 @@
 {
+  darwin.base.homebrew = {
+    taps = [ "deskflow/tap" ];
+    casks = [ "deskflow" ];
+  };
+
   nixos.deskflowServer =
     { pkgs, ... }:
     {
@@ -38,9 +43,4 @@
         end
       '';
     };
-
-  darwin.base.homebrew = {
-    taps = [ "deskflow/tap" ];
-    casks = [ "deskflow" ];
-  };
 }

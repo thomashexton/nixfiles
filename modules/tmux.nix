@@ -1,4 +1,10 @@
 {
+  darwin.workstation =
+    { pkgs, ... }:
+    {
+      environment.systemPackages = [ pkgs.tmux ];
+    };
+
   home.personal =
     { pkgs, ... }:
     {
@@ -60,11 +66,5 @@
       };
 
       xdg.configFile."tmux/tmux.conf".force = true;
-    };
-
-  darwin.workstation =
-    { pkgs, ... }:
-    {
-      environment.systemPackages = [ pkgs.tmux ];
     };
 }

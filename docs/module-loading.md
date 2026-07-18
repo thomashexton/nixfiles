@@ -38,6 +38,16 @@ The important consequence is that `modules/hosts/` is still the top of the
 graph. `import-tree` loads the host files and feature files alongside each
 other. The host files select the profile values that those features have built.
 
+### Source-order convention
+
+When a feature contributes to more than one configuration layer, its source is
+ordered `darwin.*`, then `nixos.*`, then `home.*`. This follows the most useful
+reading path: a host selects a system profile, and that system profile imports
+the lower-level Home Manager profile.
+
+This order is solely for people reading the repository. Nix merges these
+definitions by option path; their textual order does not control evaluation.
+
 ## 2. Profiles selected by each host
 
 ```mermaid
@@ -91,15 +101,6 @@ the profile is not owned by whichever file happens to appear first.
 
 | Profile | Contributing files |
 | --- | --- |
-| `home.base` | `base/home.nix`, `claude/claude.nix`, `codex/codex.nix` |
-| `home.darwin` | `karabiner/karabiner.nix` |
-| `home.darwinPersonal` | `aerospace.nix`, `streamrip.nix`, `zsh.nix` |
-| `home.nixos` | `zed.nix` |
-| `home.personal` | `alacritty/alacritty.nix`, `developer-tools.nix`, `git.nix`, `tmux.nix` |
-| `home.professional` | `claude/canva.nix` |
-| `home.gaming` | `gaming.nix` |
-| `home.plasma` | `plasma.nix` |
-| `home.hyprland` | `hyprland.nix` |
 | `darwin.base` | `base/darwin.nix`, `base/unstable-overlay.nix`, `codex/codex.nix`, `developer-tools.nix`, `deskflow.nix`, `homebrew.nix`, `karabiner/karabiner.nix`, `shell.nix` |
 | `darwin.workstation` | `alacritty/alacritty.nix`, `fonts.nix`, `git.nix`, `tmux.nix`, `zed.nix` |
 | `darwin.personal` | `base/darwin.nix`, `aerospace.nix`, `mac-personal-apps.nix` |
@@ -112,6 +113,15 @@ the profile is not owned by whichever file happens to appear first.
 | `nixos.hyprland` | `hyprland.nix` |
 | `nixos.deskflowServer` | `deskflow.nix` |
 | `nixos.remoteAccess` | `remote-access.nix` |
+| `home.base` | `base/home.nix`, `claude/claude.nix`, `codex/codex.nix` |
+| `home.darwin` | `karabiner/karabiner.nix` |
+| `home.darwinPersonal` | `aerospace.nix`, `streamrip.nix`, `zsh.nix` |
+| `home.nixos` | `zed.nix` |
+| `home.personal` | `alacritty/alacritty.nix`, `developer-tools.nix`, `git.nix`, `tmux.nix` |
+| `home.professional` | `claude/canva.nix` |
+| `home.gaming` | `gaming.nix` |
+| `home.plasma` | `plasma.nix` |
+| `home.hyprland` | `hyprland.nix` |
 
 There are three further nested imports from external flake inputs:
 
