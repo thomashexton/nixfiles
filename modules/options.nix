@@ -1,22 +1,30 @@
-# Declares the dendritic "catalog": flake.modules.<class>.<name> holds named
-# deferred modules (nixos / darwin / homeManager fragments) that feature files
-# publish and host files consume.
+# Declares the dendritic capability profiles. Feature files merge lower-level
+# modules into these profiles; host files only select the capabilities they use.
 { lib, flake-parts-lib, ... }:
 
-{
-  options.flake = flake-parts-lib.mkSubmoduleOptions {
-    modules = lib.mkOption {
-      description = "Deferred modules, grouped by class (nixos, darwin, homeManager).";
-      type = lib.types.lazyAttrsOf (lib.types.lazyAttrsOf lib.types.deferredModule);
+let
+  deferredProfiles =
+    description:
+    lib.mkOption {
+      inherit description;
+      type = lib.types.lazyAttrsOf lib.types.deferredModule;
       default = { };
     };
+in
+{
+  options = {
+    home = deferredProfiles "Home Manager capability profiles.";
+    darwin = deferredProfiles "nix-darwin capability profiles.";
+    nixos = deferredProfiles "NixOS capability profiles.";
 
-    # flake-parts core declares nixosConfigurations but not darwinConfigurations;
-    # without this, host files defining one entry each would conflict.
-    darwinConfigurations = lib.mkOption {
-      description = "nix-darwin system configurations.";
-      type = lib.types.lazyAttrsOf lib.types.raw;
-      default = { };
+    flake = flake-parts-lib.mkSubmoduleOptions {
+      # flake-parts core declares nixosConfigurations but not
+      # darwinConfigurations; this makes separately declared hosts merge.
+      darwinConfigurations = lib.mkOption {
+        description = "nix-darwin system configurations.";
+        type = lib.types.lazyAttrsOf lib.types.raw;
+        default = { };
+      };
     };
   };
 

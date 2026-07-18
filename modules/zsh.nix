@@ -1,5 +1,5 @@
 {
-  flake.modules.homeManager.zsh = {
+  home.darwinDesktop = {
     xdg.configFile."zim/.zimrc" = {
       force = true;
       text = ''

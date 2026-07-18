@@ -1,6 +1,6 @@
-# Everything Claude Code: shared settings + statusline, plus work-only extras.
+# Shared Claude Code installation, settings, and statusline.
 {
-  flake.modules.homeManager.claude =
+  home.base =
     { config, pkgs, ... }:
     {
       home.packages = [
@@ -60,7 +60,4 @@
         '';
       };
     };
-
-  # Work-machine extras (Canva workflow CLAUDE.md); only macbook-pro opts in.
-  flake.modules.homeManager.claude-work = ./_work.nix;
 }

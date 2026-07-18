@@ -4,9 +4,14 @@ NixOS and nix-darwin system configurations managed with flakes and Home Manager.
 
 ## Mental Model
 
-- `hosts/<name>/configuration.nix` is system-level config.
-- `hosts/<name>/home.nix` is user-level config via Home Manager.
-- `modules/` contains shared building blocks.
+- Every automatically imported `.nix` file under `modules/` is a top-level
+  flake-parts module implementing one feature.
+- Feature files merge their NixOS, nix-darwin, and Home Manager contributions
+  into capability profiles such as `desktop`, `gaming`, and `canva`.
+- `modules/hosts/` contains thin host constructors that select system
+  capabilities and retain only machine identity and hardware-specific values.
+- Files beginning with `_` are excluded from automatic imports; generated
+  hardware configuration is the intentional exception.
 - On macOS, install Nix first, then let this repo manage the machine with `nix-darwin`.
 - On NixOS, Nix is already part of the OS, so this repo can manage the whole machine directly.
 - Home Manager is embedded in the host builds here. Do not use `home-manager switch` for this repo.
@@ -18,6 +23,25 @@ NixOS and nix-darwin system configurations managed with flakes and Home Manager.
 | `hxtn` | NixOS | x86_64-linux | Desktop (AMD, KDE Plasma 6) |
 | `mac-mini` | macOS | aarch64-darwin | Personal Mac Mini |
 | `macbook-pro` | macOS | aarch64-darwin | Work MacBook Pro |
+
+## Dendritic Architecture
+
+The repository uses the [Dendritic pattern](https://github.com/mightyiam/dendritic)
+with flake-parts and import-tree. Lower-level modules are stored in three
+top-level configuration classes:
+
+- `home.*` — Home Manager capabilities
+- `darwin.*` — nix-darwin system capabilities
+- `nixos.*` — NixOS system capabilities
+
+Features merge into a small set of stable profiles. System profiles compose the
+matching Home Manager profiles, so host files do not maintain per-feature Home
+Manager import lists.
+
+- `mac-mini`: `darwin.base` + `darwin.desktop`
+- `macbook-pro`: `darwin.base` + `darwin.canva`
+- `hxtn`: `nixos.base` + `nixos.desktop` + `nixos.gaming` +
+  `nixos.deskflowServer` + `nixos.remoteAccess`
 
 ## Current State
 
@@ -112,6 +136,8 @@ just test              # NixOS only: apply without updating bootloader
 just validate mac-mini # build a host config without activating it
 just update            # bump flake inputs
 just check             # run flake checks
+just fmt               # format Nix files
+just fmt-check         # verify Nix formatting without rewriting files
 ```
 
 If `just` is not installed yet:
@@ -128,11 +154,13 @@ On NixOS, it runs `sudo nixos-rebuild switch ...`.
 
 If you add another machine later:
 
-1. Create `hosts/<name>/configuration.nix`.
-2. Create `hosts/<name>/home.nix`.
-3. Wire the host into [flake.nix](/Users/thomashexton/nixfiles/flake.nix).
-4. Reuse shared modules from `modules/` rather than copying whole configs.
-5. Validate before switching.
+1. Create a top-level host module under `modules/hosts/`.
+2. Select existing system capabilities for the host.
+3. Keep only hostname, state version, and genuinely machine-specific hardware
+   values in the host constructor.
+4. Add reusable behavior to a feature module and merge it into a capability
+   profile rather than extending host import lists.
+5. Validate the new host before switching.
 
 Prefer host names that describe the machine, and express role through imported
 modules.
@@ -165,10 +193,10 @@ Use this rule:
 In practice, that means:
 
 - Typed Nix: `git`, `tmux`, `aerospace`
-- Store-backed raw files: `kanata`, `zsh`, `~/.claude/statusline-command.sh`,
-  `work-laptop`'s `CLAUDE.md`
+- Store-backed raw files: `zsh`, `~/.claude/statusline-command.sh`, and the
+  Canva-specific `CLAUDE.md`
 - Out-of-store files: `~/.codex/config.toml`, `~/.claude/settings.json`,
-  `~/.config/alacritty/alacritty.toml`
+  `~/.config/alacritty/alacritty.toml`, and Karabiner's JSON configuration
 
 The important distinction is config versus state:
 
@@ -192,18 +220,16 @@ This repo does use Home Manager, but not in standalone mode.
 - That means the normal apply commands are `just switch`, `darwin-rebuild switch`, or `nixos-rebuild switch`.
 - Do not use `home-manager switch` for this repo.
 
-The Home Manager entrypoints are the host home files:
-
-- `hosts/mac-mini/home.nix`
-- `hosts/macbook-pro/home.nix`
-- `hosts/hxtn/home.nix`
+Home Manager configuration is composed through the `home.*` capability
+profiles. The `darwin.*` and `nixos.*` system profiles import the appropriate
+home profiles for each host.
 
 ### Flakes and experimental features
 
 This repo expects `nix-command` and `flakes` to be enabled.
 
 - On `mac-mini`, Determinate Nix already enables them as part of the Nix install.
-- On `hxtn`, they are enabled in [configuration.nix](/Users/thomashexton/nixfiles/hosts/hxtn/configuration.nix).
+- On `hxtn`, they are enabled by the shared `nixos.base` capability.
 - If you try to use this repo on another machine with a plain Nix install, you may need to enable them first in `nix.conf`.
 
 ### How macOS is working right now

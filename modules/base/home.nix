@@ -1,6 +1,6 @@
 # Shared home-manager baseline for thomashexton on every host.
 {
-  flake.modules.homeManager.base =
+  home.base =
     { pkgs, ... }:
     {
       home.username = "thomashexton";

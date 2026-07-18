@@ -40,4 +40,12 @@ update:
 
 # Check flake without switching
 check:
-    nix flake check
+    nix flake check path:.
+
+# Format all Nix files using the flake formatter
+fmt:
+    nix fmt .
+
+# Verify formatting without rewriting files
+fmt-check:
+    nix fmt -- --ci

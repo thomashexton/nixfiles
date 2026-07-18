@@ -1,5 +1,5 @@
 {
-  flake.modules.homeManager.git = {
+  home.desktop = {
     programs.git = {
       enable = true;
       lfs.enable = true;
@@ -45,4 +45,16 @@
     xdg.configFile."git/config".force = true;
     xdg.configFile."git/ignore".force = true;
   };
+
+  darwin.base =
+    { pkgs, ... }:
+    {
+      environment.systemPackages = [ pkgs.git ];
+    };
+
+  nixos.desktop =
+    { pkgs, ... }:
+    {
+      environment.systemPackages = [ pkgs.git ];
+    };
 }

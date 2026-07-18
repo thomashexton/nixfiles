@@ -1,6 +1,6 @@
-# Shared Homebrew baseline; hosts add their own brews/casks on top.
+# Shared Homebrew behavior. Feature modules own their taps, brews, and casks.
 {
-  flake.modules.darwin.homebrew = {
+  darwin.base = {
     homebrew = {
       enable = true;
 
@@ -10,17 +10,7 @@
         cleanup = "none";
       };
 
-      taps = [
-        "deskflow/tap"
-        "nikitabobko/tap"
-      ];
-
-      casks = [
-        "aerospace"
-        "appcleaner"
-        "deskflow"
-        "karabiner-elements"
-      ];
+      casks = [ "appcleaner" ];
     };
   };
 }

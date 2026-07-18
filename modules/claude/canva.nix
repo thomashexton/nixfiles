@@ -1,7 +1,5 @@
-{ ... }:
-
 {
-  home.file.".claude/CLAUDE.md" = {
+  home.canva.home.file.".claude/CLAUDE.md" = {
     force = true;
     text = ''
       # Claude Instructions for Canva Development

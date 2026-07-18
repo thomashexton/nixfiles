@@ -1,5 +1,5 @@
 {
-  flake.modules.homeManager.alacritty =
+  home.desktop =
     { config, pkgs, ... }:
     {
       xdg.configFile."alacritty/alacritty.toml" = {
@@ -14,5 +14,19 @@
         [window]
         decorations = "${if pkgs.stdenv.hostPlatform.isDarwin then "buttonless" else "full"}"
       '';
+    };
+
+  darwin.base =
+    { pkgs, ... }:
+    {
+      # Keep the GUI application system-wide on both Macs. The user
+      # configuration is enabled by the desktop home profile.
+      environment.systemPackages = [ pkgs.alacritty ];
+    };
+
+  nixos.desktop =
+    { pkgs, ... }:
+    {
+      environment.systemPackages = [ pkgs.alacritty ];
     };
 }

@@ -2,8 +2,8 @@
 { inputs, config, ... }:
 
 {
-  flake.modules.darwin.base =
-    { pkgs, ... }:
+  darwin.base =
+    { ... }:
     {
       imports = [
         inputs.determinate.darwinModules.default
@@ -21,14 +21,16 @@
       home-manager.useGlobalPkgs = true;
       home-manager.useUserPackages = true;
       home-manager.backupFileExtension = "pre-nix";
-      home-manager.users.thomashexton.imports = [ config.flake.modules.homeManager.base ];
-
-      environment.systemPackages = with pkgs; [
-        fish
-        fishPlugins.autopair
-        fishPlugins.done
-        fishPlugins.z
-        tree
+      home-manager.users.thomashexton.imports = [
+        config.home.base
+        config.home.darwin
       ];
     };
+
+  darwin.desktop.home-manager.users.thomashexton.imports = [
+    config.home.desktop
+    config.home.darwinDesktop
+  ];
+
+  darwin.canva.home-manager.users.thomashexton.imports = [ config.home.canva ];
 }

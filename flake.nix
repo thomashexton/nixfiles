@@ -21,6 +21,5 @@
 
   # Dendritic pattern: every .nix file under modules/ is a flake-parts module,
   # auto-imported by import-tree (paths containing "/_" are skipped).
-  outputs = inputs:
-    inputs.flake-parts.lib.mkFlake { inherit inputs; } (inputs.import-tree ./modules);
+  outputs = inputs: inputs.flake-parts.lib.mkFlake { inherit inputs; } (inputs.import-tree ./modules);
 }

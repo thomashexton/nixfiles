@@ -1,5 +1,5 @@
 {
-  flake.modules.homeManager.aerospace = {
+  home.darwinDesktop = {
     programs.aerospace = {
       enable = true;
       package = null;
@@ -177,5 +177,10 @@
         ];
       };
     };
+  };
+
+  darwin.base.homebrew = {
+    taps = [ "nikitabobko/tap" ];
+    casks = [ "aerospace" ];
   };
 }

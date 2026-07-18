@@ -10,6 +10,6 @@ let
   };
 in
 {
-  flake.modules.darwin.base.nixpkgs.overlays = [ unstable-overlay ];
-  flake.modules.nixos.base.nixpkgs.overlays = [ unstable-overlay ];
+  darwin.base.nixpkgs.overlays = [ unstable-overlay ];
+  nixos.base.nixpkgs.overlays = [ unstable-overlay ];
 }

@@ -1,5 +1,5 @@
 {
-  flake.modules.homeManager.tmux =
+  home.desktop =
     { pkgs, ... }:
     {
       programs.tmux = {
@@ -60,5 +60,11 @@
       };
 
       xdg.configFile."tmux/tmux.conf".force = true;
+    };
+
+  darwin.base =
+    { pkgs, ... }:
+    {
+      environment.systemPackages = [ pkgs.tmux ];
     };
 }
