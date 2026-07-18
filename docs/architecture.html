@@ -1,0 +1,422 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<title>nixfiles — how a machine gets assembled</title>
+<style>
+  :root {
+    --bg: #f6f7f2; --surface: #ffffff; --surface-2: #eef0e8; --ink: #232820;
+    --muted: #68705f; --line: #dde0d3; --accent: #3d7a47; --accent-soft: #e3eee2;
+    --accent-ink: #2b5c36;
+    --c-nixos: #4f76c7; --c-nixos-soft: #e7edf8;
+    --c-darwin: #8a63b8; --c-darwin-soft: #efe9f7;
+    --c-home: #b07c22; --c-home-soft: #f6efdf;
+    --lit: #fdf3d7;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #141712; --surface: #1b2019; --surface-2: #222821; --ink: #e6e9df;
+      --muted: #99a18e; --line: #2e352c; --accent: #7cbf87; --accent-soft: #22301f;
+      --accent-ink: #9fd3a8;
+      --c-nixos: #7d9fdd; --c-nixos-soft: #1d2634;
+      --c-darwin: #ab8ad3; --c-darwin-soft: #29222f;
+      --c-home: #d2a04d; --c-home-soft: #2f2818;
+      --lit: #3a3418;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #141712; --surface: #1b2019; --surface-2: #222821; --ink: #e6e9df;
+    --muted: #99a18e; --line: #2e352c; --accent: #7cbf87; --accent-soft: #22301f;
+    --accent-ink: #9fd3a8; --c-nixos: #7d9fdd; --c-nixos-soft: #1d2634;
+    --c-darwin: #ab8ad3; --c-darwin-soft: #29222f; --c-home: #d2a04d; --c-home-soft: #2f2818;
+    --lit: #3a3418;
+  }
+  :root[data-theme="light"] {
+    --bg: #f6f7f2; --surface: #ffffff; --surface-2: #eef0e8; --ink: #232820;
+    --muted: #68705f; --line: #dde0d3; --accent: #3d7a47; --accent-soft: #e3eee2;
+    --accent-ink: #2b5c36; --c-nixos: #4f76c7; --c-nixos-soft: #e7edf8;
+    --c-darwin: #8a63b8; --c-darwin-soft: #efe9f7; --c-home: #b07c22; --c-home-soft: #f6efdf;
+    --lit: #fdf3d7;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { background: var(--bg); color: var(--ink); }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.55; margin: 0; padding: 0 1.25rem 5rem;
+  }
+  .wrap { max-width: 980px; margin: 0 auto; }
+  h1, h2 {
+    font-family: Charter, "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+    line-height: 1.12; letter-spacing: -0.01em; text-wrap: balance;
+  }
+  h1 { font-size: clamp(1.9rem, 4.5vw, 2.7rem); margin: 0.4rem 0 0.7rem; }
+  h2 { font-size: clamp(1.3rem, 3vw, 1.6rem); margin: 0 0 0.6rem; }
+  p { max-width: 72ch; margin: 0.7rem 0; }
+  code, .mono { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 0.86em; }
+  code { background: var(--surface-2); padding: 0.08em 0.35em; border-radius: 4px; white-space: nowrap; }
+  a { color: var(--accent-ink); }
+  header { padding: 3rem 0 0.5rem; }
+  .eyebrow {
+    font-size: 0.7rem; font-weight: 650; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--accent-ink); margin: 0;
+  }
+  .lede { color: var(--muted); font-size: 1.06rem; max-width: 64ch; }
+  section { margin-top: 3.6rem; }
+  .sec-eyebrow {
+    font-size: 0.7rem; font-weight: 650; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 0.35rem;
+  }
+
+  /* pipeline strip */
+  .pipeline { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.5rem; margin-top: 1.4rem; counter-reset: s; }
+  @media (max-width: 760px) { .pipeline { grid-template-columns: 1fr; } }
+  .pstep { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 0.75rem 0.85rem; }
+  .pstep::before {
+    counter-increment: s; content: counter(s);
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 1.45em; height: 1.45em; border-radius: 50%; margin-bottom: 0.4rem;
+    background: var(--accent-soft); color: var(--accent-ink); font-weight: 700; font-size: 0.75rem;
+  }
+  .pstep h4 { margin: 0 0 0.2rem; font-size: 0.83rem; }
+  .pstep p { margin: 0; font-size: 0.75rem; color: var(--muted); }
+
+  /* class legend */
+  .classes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.9rem; margin-top: 1.3rem; }
+  @media (max-width: 760px) { .classes { grid-template-columns: 1fr; } }
+  .classcard { border-radius: 10px; padding: 0.85rem 1rem; border: 1px solid var(--line); background: var(--surface); border-top: 3px solid; }
+  .classcard.nixos { border-top-color: var(--c-nixos); }
+  .classcard.darwin { border-top-color: var(--c-darwin); }
+  .classcard.home { border-top-color: var(--c-home); }
+  .classcard h4 { margin: 0 0 0.25rem; font-size: 0.92rem; }
+  .classcard h4 code { background: transparent; padding: 0; }
+  .classcard.nixos h4 { color: var(--c-nixos); }
+  .classcard.darwin h4 { color: var(--c-darwin); }
+  .classcard.home h4 { color: var(--c-home); }
+  .classcard p { margin: 0; font-size: 0.82rem; color: var(--muted); }
+  .rule {
+    margin-top: 1rem; border: 1px solid var(--line); border-left: 4px solid var(--accent);
+    border-radius: 8px; background: var(--surface); padding: 0.8rem 1.1rem; font-size: 0.95rem; max-width: none;
+  }
+
+  /* host tabs */
+  .tabs { display: flex; gap: 0.4rem; margin: 1.3rem 0 1.1rem; flex-wrap: wrap; }
+  .tab {
+    font: inherit; font-size: 0.88rem; font-weight: 600; cursor: pointer;
+    border: 1px solid var(--line); background: var(--surface); color: var(--ink);
+    border-radius: 999px; padding: 0.42rem 1.05rem;
+  }
+  .tab:hover { border-color: var(--accent); }
+  .tab.on { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .tab:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  /* explorer */
+  .flow { display: grid; grid-template-columns: 1fr 1.15fr 1.15fr; gap: 1rem; align-items: start; }
+  @media (max-width: 820px) { .flow { grid-template-columns: 1fr; } }
+  .col h5 {
+    margin: 0 0 0.55rem; font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--muted); font-weight: 650;
+  }
+  .card {
+    border: 1px solid var(--line); border-radius: 10px; background: var(--surface);
+    padding: 0.6rem 0.8rem; margin-bottom: 0.55rem; transition: background 0.15s, border-color 0.15s;
+  }
+  .card .nm { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.82rem; font-weight: 700; display: block; }
+  .card .why { font-size: 0.75rem; color: var(--muted); }
+  .card.sys { cursor: default; border-left: 4px solid; }
+  .card.sys.nixos { border-left-color: var(--c-nixos); }
+  .card.sys.darwin { border-left-color: var(--c-darwin); }
+  .card.sys.nixos .nm { color: var(--c-nixos); }
+  .card.sys.darwin .nm { color: var(--c-darwin); }
+  .card.hm { border-left: 4px solid var(--c-home); }
+  .card.hm .nm { color: var(--c-home); }
+  .card.host { border-left: 4px solid var(--accent); background: var(--accent-soft); }
+  .card.host .nm { color: var(--accent-ink); font-size: 0.95rem; }
+  .card.lit { background: var(--lit); border-color: var(--accent); }
+  .card.hm.glow { background: var(--lit); border-color: var(--c-home); }
+  .card.ghost { opacity: 0.55; border-style: dashed; }
+  .swap {
+    display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; color: var(--muted);
+    margin: 0.2rem 0 0.8rem;
+  }
+  .swap input { accent-color: var(--accent); }
+  .hint { font-size: 0.78rem; color: var(--muted); margin-top: 0.4rem; }
+
+  /* matrix */
+  .matrix-scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); margin-top: 1.1rem; }
+  table.matrix { border-collapse: collapse; width: 100%; font-size: 0.78rem; }
+  .matrix th, .matrix td { padding: 0.34rem 0.5rem; text-align: center; border-bottom: 1px solid var(--line); }
+  .matrix thead th {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.68rem; font-weight: 700;
+    vertical-align: bottom; padding-top: 0.7rem; white-space: nowrap;
+  }
+  .matrix thead th.nixos { color: var(--c-nixos); }
+  .matrix thead th.darwin { color: var(--c-darwin); }
+  .matrix thead th.home { color: var(--c-home); }
+  .matrix tbody th {
+    text-align: left; font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.74rem;
+    font-weight: 500; white-space: nowrap; position: sticky; left: 0; background: var(--surface);
+  }
+  .matrix tbody tr:hover td, .matrix tbody tr:hover th { background: var(--lit); }
+  .matrix tbody tr.inactive { opacity: 0.38; }
+  .matrix .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; }
+  .matrix .dot.nixos { background: var(--c-nixos); }
+  .matrix .dot.darwin { background: var(--c-darwin); }
+  .matrix .dot.home { background: var(--c-home); }
+  .matrix td.litcol, .matrix th.litcol { background: var(--lit); }
+  .matrix tfoot td { font-size: 0.72rem; color: var(--muted); text-align: left; padding: 0.5rem 0.6rem; border: 0; }
+
+  /* where-do-i-put-it */
+  .decision { border: 1px solid var(--line); border-radius: 10px; background: var(--surface); padding: 1rem 1.3rem; margin-top: 1.2rem; }
+  .decision ol { margin: 0.4rem 0 0; padding-left: 1.2rem; font-size: 0.92rem; }
+  .decision li { margin: 0.45rem 0; }
+
+  footer { margin-top: 4rem; padding-top: 1.2rem; border-top: 1px solid var(--line); font-size: 0.82rem; color: var(--muted); }
+  footer ul { margin: 0.4rem 0 0; padding-left: 1.2rem; }
+  footer li { margin: 0.3rem 0; }
+</style>
+
+<div class="wrap">
+
+<header>
+  <p class="eyebrow">thomashexton/nixfiles · docs</p>
+  <h1>How a machine gets assembled</h1>
+  <p class="lede">There are two different graphs in this repo, and confusing them is what makes the configs hard to grok. <strong>Loading</strong> is flat: every file under <code>modules/</code> is slurped in as an equal. <strong>Selection</strong> is layered: hosts pick system profiles, and system profiles drag in home profiles. This page lets you walk the second graph one host at a time.</p>
+</header>
+
+<section>
+  <p class="sec-eyebrow">Graph one · loading (flat, automatic)</p>
+  <h2>Every file is a peer — nothing imports anything</h2>
+  <div class="pipeline">
+    <div class="pstep"><h4>flake.nix</h4><p>Declares inputs, then makes exactly one call: <span class="mono">mkFlake (import-tree ./modules)</span>.</p></div>
+    <div class="pstep"><h4>import-tree scans</h4><p>Every <span class="mono">.nix</span> under <span class="mono">modules/</span> loads — features, hosts, options alike. Paths containing <span class="mono">/_</span> are skipped.</p></div>
+    <div class="pstep"><h4>Files fill profiles</h4><p>Each file merges settings <em>into</em> named profiles: <span class="mono">darwin.*</span>, <span class="mono">nixos.*</span>, <span class="mono">home.*</span> (declared in <span class="mono">options.nix</span>).</p></div>
+    <div class="pstep"><h4>Hosts select</h4><p>A host file lists which profiles it wants and hands them to <span class="mono">darwinSystem</span> / <span class="mono">nixosSystem</span>.</p></div>
+    <div class="pstep"><h4>Outputs appear</h4><p>Ordinary <span class="mono">darwinConfigurations.*</span> and <span class="mono">nixosConfigurations.*</span> — what <span class="mono">just switch</span> builds.</p></div>
+  </div>
+  <p class="hint">Consequence: a file's <em>location</em> never matters and no file is "imported by" another. Only the profile names inside it matter.</p>
+</section>
+
+<section>
+  <p class="sec-eyebrow">Graph two · selection (layered, explicit)</p>
+  <h2>Three vocabularies, one rule</h2>
+  <div class="classes">
+    <div class="classcard darwin"><h4><code>darwin.*</code></h4><p>macOS <em>system</em> layer (nix-darwin): system packages, Homebrew, launchd, fonts. Selected by Mac host files.</p></div>
+    <div class="classcard nixos"><h4><code>nixos.*</code></h4><p>Linux <em>system</em> layer: boot, services, desktop, gaming. Selected by hxtn's host file.</p></div>
+    <div class="classcard home"><h4><code>home.*</code></h4><p>Your <em>user</em> layer (home-manager): dotfiles, per-user packages. <strong>Never selected by hosts directly.</strong></p></div>
+  </div>
+  <div class="rule"><strong>The one rule:</strong> hosts only ever select <em>system</em> profiles. Each system profile then imports the matching <code>home.*</code> profiles into <code>home-manager.users.thomashexton</code>. So picking <code>darwin.personal</code> silently brings <code>home.personal</code> + <code>home.darwinPersonal</code> with it — that wiring lives in <code>base/darwin.nix</code> and <code>base/nixos.nix</code> (and inside <code>plasma.nix</code>/<code>hyprland.nix</code> for the desktops).</div>
+</section>
+
+<section>
+  <p class="sec-eyebrow">Walk it</p>
+  <h2>Pick a host, see its layers</h2>
+  <div class="tabs" id="tabs" role="tablist"></div>
+  <div class="swap" id="swaprow" hidden>
+    <input type="checkbox" id="swap"><label for="swap">Swap <code>nixos.plasma</code> → <code>nixos.hyprland</code> (the real change is exactly one line in <code>hxtn.nix</code>)</label>
+  </div>
+  <div class="flow">
+    <div class="col"><h5>Host file selects…</h5><div id="hostcol"></div></div>
+    <div class="col"><h5>System profiles <span style="text-transform:none">(hover one)</span></h5><div id="syscol"></div></div>
+    <div class="col"><h5>…which auto-import home profiles</h5><div id="homecol"></div></div>
+  </div>
+  <p class="hint" id="flowhint"></p>
+
+  <div class="matrix-scroll"><table class="matrix" id="matrix"></table></div>
+  <p class="hint">Rows are feature files; a dot means "this file contributes settings to this profile." Dimmed rows don't reach the selected host at all. Hover a system profile card above to spotlight its column.</p>
+</section>
+
+<section>
+  <p class="sec-eyebrow">Practical</p>
+  <h2>"Where do I put…?"</h2>
+  <div class="decision">
+    <ol>
+      <li><strong>A new app/tool</strong> → one new file in <code>modules/</code>. Inside it, assign to the profile(s) matching who should get it: every machine → <code>*.base</code>; dev machines → <code>*.workstation</code>; personal life → <code>*.personal</code> / <code>home.darwinPersonal</code>; work → <code>home.professional</code>.</li>
+      <li><strong>System-level vs user-level?</strong> Binary on PATH for everyone → <code>darwin.*</code>/<code>nixos.*</code> <code>environment.systemPackages</code>. Dotfiles or per-user packages → the matching <code>home.*</code> in the same file.</li>
+      <li><strong>Give an existing feature to another machine</strong> → usually nothing to edit in the feature; change which <em>profile</em> it assigns to, or add the profile to the host's select-list.</li>
+      <li><strong>A whole new capability class</strong> (like gaming was) → invent a profile name, wire its <code>home.*</code> import in <code>base/darwin.nix</code> or <code>base/nixos.nix</code>, select it from a host.</li>
+      <li><strong>Machine-specific one-offs</strong> (hostname, boot, hardware) → the literal block at the bottom of that host's file. Nowhere else.</li>
+    </ol>
+  </div>
+</section>
+
+<footer>
+  <strong>Fine print</strong>
+  <ul>
+    <li><code>modules/**/_*.nix</code> is invisible to import-tree — only <code>hosts/hxtn/_hardware-configuration.nix</code> uses this, imported explicitly by <code>hxtn.nix</code>.</li>
+    <li>Profiles also pull from flake inputs: <code>darwin.base</code> ← Determinate + home-manager modules; <code>nixos.base</code> ← home-manager; <code>nixos.gaming</code> ← nix-citizen; <code>nixos.hyprland</code> ← a pinned Hyprland (see README for the removal criteria).</li>
+    <li><code>options.nix</code> declares the three profile namespaces + <code>flake.darwinConfigurations</code>; <code>formatter.nix</code> is plain flake-parts <code>perSystem</code>. Neither is a feature.</li>
+    <li>Companion reference: <code>docs/module-loading.md</code> (same facts, prose + mermaid). This page: <code>docs/architecture.html</code>.</li>
+  </ul>
+</footer>
+
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  // ---- data (extracted from the repo; verify with: grep -oE '^(darwin|nixos|home)\.[A-Za-z]+' modules -r) ----
+  var WIRES = { // system profile -> home profiles it imports
+    "darwin.base": ["home.base", "home.darwin"],
+    "darwin.personal": ["home.personal", "home.darwinPersonal"],
+    "darwin.professional": ["home.professional"],
+    "nixos.base": ["home.base"],
+    "nixos.workstation": ["home.nixos"],
+    "nixos.personal": ["home.personal"],
+    "nixos.gaming": ["home.gaming"],
+    "nixos.plasma": ["home.plasma"],
+    "nixos.hyprland": ["home.hyprland"]
+  };
+  var WHY = {
+    "darwin.base": "every Mac", "darwin.workstation": "dev tooling",
+    "darwin.personal": "personal Mac things", "darwin.professional": "work Mac things",
+    "nixos.base": "every NixOS box", "nixos.workstation": "dev tooling",
+    "nixos.personal": "personal things", "nixos.gaming": "Steam, Star Citizen…",
+    "nixos.plasma": "KDE desktop", "nixos.hyprland": "Hyprland desktop (alt)",
+    "nixos.deskflowServer": "KVM server role", "nixos.remoteAccess": "SSH",
+    "home.base": "always-on dotfiles", "home.darwin": "mac-only dotfiles",
+    "home.personal": "personal dotfiles", "home.darwinPersonal": "personal mac dotfiles",
+    "home.professional": "work dotfiles", "home.nixos": "linux-only dotfiles",
+    "home.gaming": "gaming user bits", "home.plasma": "KDE user bits", "home.hyprland": "Hyprland user bits"
+  };
+  var HOSTS = {
+    "mac-mini": { cls: "darwin", literal: "hostname · computerName · stateVersion · extra homebrew (1password, cursor…)",
+      sys: ["darwin.base", "darwin.workstation", "darwin.personal"] },
+    "macbook-pro": { cls: "darwin", literal: "hostname · computerName · stateVersion",
+      sys: ["darwin.base", "darwin.workstation", "darwin.professional"] },
+    "hxtn": { cls: "nixos", literal: "hostname · boot · kernel · zram · amdgpu · user/ssh keys · stateVersion + _hardware-configuration.nix",
+      sys: ["nixos.base", "nixos.workstation", "nixos.plasma", "nixos.personal", "nixos.gaming", "nixos.deskflowServer", "nixos.remoteAccess"] }
+  };
+  var FILES = [
+    ["base/darwin.nix",        ["darwin.base","darwin.personal","darwin.professional"]],
+    ["base/nixos.nix",         ["nixos.base","nixos.workstation","nixos.personal","nixos.gaming"]],
+    ["base/home.nix",          ["home.base"]],
+    ["base/unstable-overlay.nix",["darwin.base","nixos.base"]],
+    ["shell.nix",              ["darwin.base","nixos.base"]],
+    ["homebrew.nix",           ["darwin.base"]],
+    ["developer-tools.nix",    ["darwin.base","nixos.workstation","home.personal"]],
+    ["codex/codex.nix",        ["darwin.base","nixos.base","home.base"]],
+    ["claude/claude.nix",      ["home.base"]],
+    ["claude/canva.nix",       ["home.professional"]],
+    ["karabiner/karabiner.nix",["darwin.base","home.darwin"]],
+    ["deskflow.nix",           ["darwin.base","nixos.deskflowServer"]],
+    ["alacritty/alacritty.nix",["darwin.workstation","nixos.workstation","home.personal"]],
+    ["git.nix",                ["darwin.workstation","nixos.workstation","home.personal"]],
+    ["tmux.nix",               ["darwin.workstation","home.personal"]],
+    ["zed.nix",                ["darwin.workstation","nixos.workstation","home.nixos"]],
+    ["fonts.nix",              ["darwin.workstation","nixos.workstation"]],
+    ["aerospace.nix",          ["darwin.personal","home.darwinPersonal"]],
+    ["mac-personal-apps.nix",  ["darwin.personal"]],
+    ["zsh.nix",                ["home.darwinPersonal"]],
+    ["streamrip.nix",          ["home.darwinPersonal"]],
+    ["audio.nix",              ["nixos.workstation"]],
+    ["graphics.nix",           ["nixos.workstation"]],
+    ["keyboard.nix",           ["nixos.workstation"]],
+    ["gaming.nix",             ["nixos.gaming","home.gaming"]],
+    ["plasma.nix",             ["nixos.plasma","home.plasma"]],
+    ["hyprland.nix",           ["nixos.hyprland","home.hyprland"]],
+    ["remote-access.nix",      ["nixos.remoteAccess"]]
+  ];
+
+  var current = "mac-mini";
+  var $ = function (id) { return document.getElementById(id); };
+  var esc = function (s) { return s.replace(/&/g, "&amp;").replace(/</g, "&lt;"); };
+  var clsOf = function (p) { return p.split(".")[0]; };
+
+  function sysProfiles() {
+    var sys = HOSTS[current].sys.slice();
+    if (current === "hxtn" && $("swap").checked) {
+      sys[sys.indexOf("nixos.plasma")] = "nixos.hyprland";
+    }
+    return sys;
+  }
+  function homeProfiles(sys) {
+    var out = [], seen = {};
+    sys.forEach(function (s) {
+      (WIRES[s] || []).forEach(function (h) {
+        if (!seen[h]) { seen[h] = s; out.push({ name: h, via: [s] }); }
+        else { /* find and append */ out.forEach(function (o) { if (o.name === h) o.via.push(s); }); }
+      });
+    });
+    return out;
+  }
+
+  function render() {
+    var host = HOSTS[current], sys = sysProfiles(), homes = homeProfiles(sys);
+    $("swaprow").hidden = current !== "hxtn";
+
+    // tabs
+    $("tabs").innerHTML = Object.keys(HOSTS).map(function (h) {
+      return '<button class="tab' + (h === current ? " on" : "") + '" role="tab" aria-selected="' + (h === current) + '" data-h="' + h + '">' + h + "</button>";
+    }).join("");
+
+    // host column
+    $("hostcol").innerHTML =
+      '<div class="card host"><span class="nm">' + current + '</span>' +
+      '<span class="why">modules/hosts/' + (current === "hxtn" ? "hxtn/hxtn.nix" : current + ".nix") + "</span></div>" +
+      '<div class="card lit"><span class="nm">literal block</span><span class="why">' + esc(host.literal) + "</span></div>";
+
+    // system column
+    $("syscol").innerHTML = sys.map(function (s) {
+      return '<div class="card sys ' + clsOf(s) + '" data-p="' + s + '"><span class="nm">' + s + '</span><span class="why">' + (WHY[s] || "") + "</span></div>";
+    }).join("");
+
+    // home column
+    $("homecol").innerHTML = homes.length ? homes.map(function (h) {
+      return '<div class="card hm" data-via="' + h.via.join(" ") + '"><span class="nm">' + h.name + '</span><span class="why">via ' + h.via.join(", ") + "</span></div>";
+    }).join("") : '<div class="card ghost"><span class="why">none</span></div>';
+
+    $("flowhint").textContent =
+      current === "macbook-pro"
+        ? "Note the asymmetry: darwin.workstation imports no home profile — workstation tools are system-level on the Macs. And no darwin.personal here: no aerospace, no zsh extras, no streamrip on the work laptop."
+        : current === "hxtn"
+          ? "hxtn selects seven profiles. The desktop is a genuine choice: plasma and hyprland are parallel profiles — flip the checkbox to preview the swap."
+          : "mac-mini = base + workstation + personal. The personal profile is what brings aerospace, zim/zsh, and streamrip — the work MacBook doesn't get those.";
+
+    // matrix
+    var cols = sys.concat(homes.map(function (h) { return h.name; }));
+    var head = "<thead><tr><th></th>" + cols.map(function (c) {
+      return '<th class="' + clsOf(c) + '" data-col="' + c + '">' + c.replace(".", ".<br>") + "</th>";
+    }).join("") + "</tr></thead>";
+    var body = "<tbody>" + FILES.map(function (f) {
+      var name = f[0], profs = f[1];
+      var active = profs.some(function (p) { return cols.indexOf(p) !== -1; });
+      return '<tr class="' + (active ? "" : "inactive") + '"><th>' + name + "</th>" + cols.map(function (c) {
+        return '<td data-col="' + c + '">' + (profs.indexOf(c) !== -1 ? '<span class="dot ' + clsOf(c) + '"></span>' : "") + "</td>";
+      }).join("") + "</tr>";
+    }).join("") + "</tbody>";
+    var inact = FILES.filter(function (f) { return !f[1].some(function (p) { return cols.indexOf(p) !== -1; }); }).length;
+    var foot = '<tfoot><tr><td colspan="' + (cols.length + 1) + '">' + inact + " of " + FILES.length +
+      " feature files contribute nothing to " + current + " — they exist, they load, they just never get selected here.</td></tr></tfoot>";
+    $("matrix").innerHTML = head + body + foot;
+  }
+
+  // interactions
+  document.addEventListener("click", function (e) {
+    var t = e.target.closest(".tab");
+    if (t) { current = t.getAttribute("data-h"); render(); }
+  });
+  document.addEventListener("change", function (e) {
+    if (e.target.id === "swap") render();
+  });
+  document.addEventListener("mouseover", function (e) {
+    var card = e.target.closest(".card.sys");
+    document.querySelectorAll(".card.hm, .matrix [data-col]").forEach(function (el) { el.classList.remove("glow", "litcol"); });
+    if (!card) return;
+    var p = card.getAttribute("data-p");
+    document.querySelectorAll(".card.hm").forEach(function (el) {
+      if ((el.getAttribute("data-via") || "").split(" ").indexOf(p) !== -1) el.classList.add("glow");
+    });
+    document.querySelectorAll('.matrix [data-col="' + p + '"]').forEach(function (el) { el.classList.add("litcol"); });
+  });
+
+  render();
+})();
+</script>
+
+</body>
+</html>

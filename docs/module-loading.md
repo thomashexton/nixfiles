@@ -1,5 +1,9 @@
 # Module loading and composition
 
+> Interactive companion: open [`docs/architecture.html`](./architecture.html) in a
+> browser to walk the same graphs host-by-host (pick a machine, hover a profile,
+> preview the plasma→hyprland swap).
+
 This repository does not have a conventional tree in which a host imports a
 list of feature files. There are two distinct operations:
 
