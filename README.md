@@ -21,7 +21,7 @@ NixOS and nix-darwin system configurations managed with flakes and Home Manager.
 
 | Host | OS | Arch | Description |
 |------|-----|------|-------------|
-| `hxtn` | NixOS | x86_64-linux | Desktop (AMD, KDE Plasma 6) |
+| `hxtn` | NixOS | x86_64-linux | Desktop (AMD, KDE Plasma 6; Hyprland staged) |
 | `mac-mini` | macOS | aarch64-darwin | Personal Mac Mini |
 | `macbook-pro` | macOS | aarch64-darwin | Work MacBook Pro |
 
@@ -44,8 +44,9 @@ profiles, so host files do not maintain per-feature Home Manager import lists.
 - `mac-mini`: `darwin.base` + `darwin.workstation` + `darwin.personal`
 - `macbook-pro`: `darwin.base` + `darwin.workstation` +
   `darwin.professional`
-- `hxtn`: `nixos.base` + `nixos.workstation` + `nixos.personal` +
-  `nixos.gaming` + `nixos.deskflowServer` + `nixos.remoteAccess`
+- `hxtn`: `nixos.base` + `nixos.workstation` + `nixos.plasma` +
+  `nixos.personal` + `nixos.gaming` + `nixos.deskflowServer` +
+  `nixos.remoteAccess`
 
 ## Current State
 
@@ -199,8 +200,12 @@ In practice, that means:
 - Typed Nix: `git`, `tmux`, `aerospace`
 - Store-backed raw files: `zsh`, `~/.claude/statusline-command.sh`, and the
   Canva-specific `CLAUDE.md`
-- Out-of-store files: `~/.codex/config.toml`, `~/.claude/settings.json`,
+- Out-of-store files: `~/.claude/settings.json`,
   `~/.config/alacritty/alacritty.toml`, and Karabiner's JSON configuration
+
+Codex is split across its native configuration layers: shared MCP definitions
+are declared in `/etc/codex/config.toml`, while Codex owns the writable
+`~/.codex/config.toml` for per-device settings and UI state.
 
 The important distinction is config versus state:
 
@@ -251,15 +256,75 @@ macOS by importing Determinate's nix-darwin module and setting
 `determinateNix.enable = true;`. On a fresh macOS install, the first
 activation still has to bootstrap `darwin-rebuild` via `nix run`.
 
-### Why KDE Plasma instead of Hyprland?
+### Prepared Hyprland and Deskflow InputCapture
 
-Deskflow KVM (used to share mouse/keyboard between `hxtn` and the Macs)
-requires the
+`hxtn` still selects `config.nixos.plasma`; the alternative
+`config.nixos.hyprland` capability is staged for a deliberate first boot.
+Deskflow requires the
 [InputCapture](https://flatpak.github.io/xdg-desktop-portal/docs/doc-org.freedesktop.portal.InputCapture.html)
-XDG Desktop Portal, which KDE Plasma 6.1+ implements but Hyprland does not yet.
+portal to move its pointer and keyboard between Wayland desktops. The required
+upstream work merged in July 2026:
 
-Hyprland tracking issue: [xdg-desktop-portal-hyprland#259](https://github.com/hyprwm/xdg-desktop-portal-hyprland/issues/259)
-Draft PR: [xdg-desktop-portal-hyprland#268](https://github.com/hyprwm/xdg-desktop-portal-hyprland/pull/268)
+- [xdg-desktop-portal-hyprland#268](https://github.com/hyprwm/xdg-desktop-portal-hyprland/pull/268), merged as `0e832b50ecc49d4bae01a29845c1b3fafc5c5c99`
+- [Hyprland#7919](https://github.com/hyprwm/Hyprland/pull/7919), merged as `0b0d7ede2192ae515638890037890bdecca6eba2`
 
-If Hyprland merges InputCapture support, switching back is an option. The old
-config is in git history.
+#### Large temporary upstream caveat
+
+This support is newer than the Hyprland/XDPH pair in NixOS 25.11. Even the
+pinned Hyprland revision currently locks an older XDPH, so `flake.nix` pins a
+known post-merge Hyprland revision and overrides its nested `xdph` input with
+the merged XDPH revision. `modules/hyprland.nix` also aligns Mesa with
+Hyprland's nixpkgs input, as recommended by Hyprland when mixing its flake with
+a stable NixOS release.
+
+These are packaging bridges, not permanent configuration. Revisit them once
+Hyprland's own lock contains the merged XDPH work. Remove the nested `xdph`
+override first; once stable nixpkgs ships a matching Hyprland/XDPH pair, remove
+the `hyprland` flake input, its Cachix/Mesa plumbing, and the explicit
+`package`/`portalPackage` overrides in favour of the NixOS packages.
+
+#### First rollout
+
+In `modules/hosts/hxtn/hxtn.nix`, make the desktop capability swap:
+
+```nix
+config.nixos.plasma
+```
+
+becomes:
+
+```nix
+config.nixos.hyprland
+```
+
+Do not use `just switch` for the first desktop replacement: that would stop the
+running display manager. Build it as the next boot generation instead. The
+current Nix daemon does not know about the Hyprland cache until the new
+generation is active, so supply the cache once on the command line:
+
+```sh
+sudo nixos-rebuild boot --flake .#hxtn \
+  --option extra-substituters https://hyprland.cachix.org \
+  --option extra-trusted-public-keys \
+  'hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc='
+```
+
+Reboot only when ready. The previous Plasma generation remains selectable in
+the systemd-boot menu if Hyprland or Deskflow fails. No configuration command
+in this section should be run remotely without someone able to use that menu.
+
+After logging in, confirm that the portal is healthy and then test Deskflow:
+
+```sh
+systemctl --user status xdg-desktop-portal-hyprland
+systemctl --user status xdg-desktop-portal
+```
+
+Deskflow starts as its native GUI so its existing settings and tray controls
+remain available. Configure it as the server if its user settings do not
+already do so. `Super+Shift+Escape` is the emergency Hyprland binding that
+forcibly releases an active InputCapture session.
+
+Dolphin is intentionally retained for the first migration. This keeps some Qt
+and KDE Frameworks libraries, but does not retain Plasma, KWin, or SDDM. Revisit
+the file-manager choice after the Hyprland setup has settled.

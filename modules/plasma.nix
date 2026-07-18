@@ -1,10 +1,12 @@
 # KDE Plasma desktop and its Home Manager user experience.
-{ inputs, ... }:
+{ config, inputs, ... }:
 
 {
-  nixos.workstation =
+  nixos.plasma =
     { pkgs, ... }:
     {
+      home-manager.users.thomashexton.imports = [ config.home.plasma ];
+
       services.desktopManager.plasma6.enable = true;
       services.displayManager.sddm = {
         enable = true;
@@ -16,7 +18,7 @@
       environment.systemPackages = [ pkgs.ghostty ];
     };
 
-  home.nixos =
+  home.plasma =
     { lib, pkgs, ... }:
     {
       home.packages = [
