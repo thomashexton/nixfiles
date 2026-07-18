@@ -1,5 +1,5 @@
 {
-  home.darwinDesktop = {
+  home.darwinPersonal = {
     programs.aerospace = {
       enable = true;
       package = null;
@@ -179,7 +179,7 @@
     };
   };
 
-  darwin.base.homebrew = {
+  darwin.personal.homebrew = {
     taps = [ "nikitabobko/tap" ];
     casks = [ "aerospace" ];
   };

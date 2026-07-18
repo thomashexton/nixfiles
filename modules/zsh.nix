@@ -1,5 +1,5 @@
 {
-  home.darwinDesktop = {
+  home.darwinPersonal = {
     xdg.configFile."zim/.zimrc" = {
       force = true;
       text = ''

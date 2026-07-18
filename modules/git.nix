@@ -1,5 +1,5 @@
 {
-  home.desktop = {
+  home.personal = {
     programs.git = {
       enable = true;
       lfs.enable = true;
@@ -46,13 +46,13 @@
     xdg.configFile."git/ignore".force = true;
   };
 
-  darwin.base =
+  darwin.workstation =
     { pkgs, ... }:
     {
       environment.systemPackages = [ pkgs.git ];
     };
 
-  nixos.desktop =
+  nixos.workstation =
     { pkgs, ... }:
     {
       environment.systemPackages = [ pkgs.git ];

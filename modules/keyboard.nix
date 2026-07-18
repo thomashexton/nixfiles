@@ -1,6 +1,6 @@
 # Keyboard remapping and configuration tools for the NixOS desktop.
 {
-  nixos.desktop =
+  nixos.workstation =
     { pkgs, ... }:
     {
       services.keyd = {

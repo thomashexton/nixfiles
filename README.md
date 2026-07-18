@@ -7,7 +7,8 @@ NixOS and nix-darwin system configurations managed with flakes and Home Manager.
 - Every automatically imported `.nix` file under `modules/` is a top-level
   flake-parts module implementing one feature.
 - Feature files merge their NixOS, nix-darwin, and Home Manager contributions
-  into capability profiles such as `desktop`, `gaming`, and `canva`.
+  into capability and role profiles such as `workstation`, `gaming`,
+  `personal`, and `professional`.
 - `modules/hosts/` contains thin host constructors that select system
   capabilities and retain only machine identity and hardware-specific values.
 - Files beginning with `_` are excluded from automatic imports; generated
@@ -34,14 +35,17 @@ top-level configuration classes:
 - `darwin.*` — nix-darwin system capabilities
 - `nixos.*` — NixOS system capabilities
 
-Features merge into a small set of stable profiles. System profiles compose the
-matching Home Manager profiles, so host files do not maintain per-feature Home
-Manager import lists.
+Features merge into a small set of stable profiles. A feature path describes
+what the file implements (for example, `claude/canva.nix`), while its target
+profile describes where that feature applies (for example,
+`home.professional`). System profiles compose the matching Home Manager
+profiles, so host files do not maintain per-feature Home Manager import lists.
 
-- `mac-mini`: `darwin.base` + `darwin.desktop`
-- `macbook-pro`: `darwin.base` + `darwin.canva`
-- `hxtn`: `nixos.base` + `nixos.desktop` + `nixos.gaming` +
-  `nixos.deskflowServer` + `nixos.remoteAccess`
+- `mac-mini`: `darwin.base` + `darwin.workstation` + `darwin.personal`
+- `macbook-pro`: `darwin.base` + `darwin.workstation` +
+  `darwin.professional`
+- `hxtn`: `nixos.base` + `nixos.workstation` + `nixos.personal` +
+  `nixos.gaming` + `nixos.deskflowServer` + `nixos.remoteAccess`
 
 ## Current State
 
@@ -166,7 +170,7 @@ Prefer host names that describe the machine, and express role through imported
 modules.
 
 - Good pattern: `mac-mini`, `macbook-pro`, `devbox`
-- Role/purpose: `personal`, `work`, `server`
+- Role/purpose: `personal`, `professional`, `server`
 
 If the future devbox is macOS or NixOS, it fits this host model directly. If it
 is a non-NixOS Linux machine, the repo will probably need a separate

@@ -15,7 +15,7 @@
       ];
     };
 
-  nixos.desktop =
+  nixos.workstation =
     { pkgs, ... }:
     {
       environment.systemPackages = with pkgs; [
@@ -27,7 +27,7 @@
       ];
     };
 
-  home.desktop =
+  home.personal =
     { pkgs, ... }:
     {
       home.packages = [ pkgs.just ];

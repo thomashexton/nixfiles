@@ -1,6 +1,6 @@
 # Low-latency desktop audio for NixOS workstations.
 {
-  nixos.desktop =
+  nixos.workstation =
     { pkgs, ... }:
     {
       security.rtkit.enable = true;

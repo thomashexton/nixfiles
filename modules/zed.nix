@@ -1,5 +1,5 @@
 {
-  home.nixosDesktop =
+  home.nixos =
     { pkgs, ... }:
     {
       # Zed configuration managed declaratively
@@ -32,13 +32,13 @@
       };
     };
 
-  darwin.base =
+  darwin.workstation =
     { pkgs, ... }:
     {
       environment.systemPackages = [ pkgs.zed-editor ];
     };
 
-  nixos.desktop =
+  nixos.workstation =
     { pkgs, ... }:
     {
       environment.systemPackages = [ pkgs.zed-editor ];

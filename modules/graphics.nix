@@ -1,6 +1,6 @@
 # Graphics tooling for the AMD NixOS workstation.
 {
-  nixos.desktop =
+  nixos.workstation =
     { pkgs, ... }:
     {
       services.lact.enable = true;

@@ -1,6 +1,6 @@
-# Desktop applications selected for the Mac Mini.
+# Personal applications selected for the Mac Mini.
 {
-  darwin.desktop.homebrew = {
+  darwin.personal.homebrew = {
     brews = [ "mas" ];
     casks = [
       "1password"

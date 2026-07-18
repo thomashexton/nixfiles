@@ -1,5 +1,5 @@
 {
-  home.desktop =
+  home.personal =
     { config, pkgs, ... }:
     {
       xdg.configFile."alacritty/alacritty.toml" = {
@@ -16,7 +16,7 @@
       '';
     };
 
-  darwin.base =
+  darwin.workstation =
     { pkgs, ... }:
     {
       # Keep the GUI application system-wide on both Macs. The user
@@ -24,7 +24,7 @@
       environment.systemPackages = [ pkgs.alacritty ];
     };
 
-  nixos.desktop =
+  nixos.workstation =
     { pkgs, ... }:
     {
       environment.systemPackages = [ pkgs.alacritty ];

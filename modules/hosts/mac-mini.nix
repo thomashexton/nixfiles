@@ -4,7 +4,8 @@
   flake.darwinConfigurations.mac-mini = inputs.nix-darwin.lib.darwinSystem {
     modules = [
       config.darwin.base
-      config.darwin.desktop
+      config.darwin.workstation
+      config.darwin.personal
       (
         { ... }:
         {

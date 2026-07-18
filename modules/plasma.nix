@@ -2,7 +2,7 @@
 { inputs, ... }:
 
 {
-  nixos.desktop =
+  nixos.workstation =
     { pkgs, ... }:
     {
       services.desktopManager.plasma6.enable = true;
@@ -16,7 +16,7 @@
       environment.systemPackages = [ pkgs.ghostty ];
     };
 
-  home.nixosDesktop =
+  home.nixos =
     { lib, pkgs, ... }:
     {
       home.packages = [

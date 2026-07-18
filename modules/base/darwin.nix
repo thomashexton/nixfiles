@@ -27,10 +27,10 @@
       ];
     };
 
-  darwin.desktop.home-manager.users.thomashexton.imports = [
-    config.home.desktop
-    config.home.darwinDesktop
+  darwin.personal.home-manager.users.thomashexton.imports = [
+    config.home.personal
+    config.home.darwinPersonal
   ];
 
-  darwin.canva.home-manager.users.thomashexton.imports = [ config.home.canva ];
+  darwin.professional.home-manager.users.thomashexton.imports = [ config.home.professional ];
 }

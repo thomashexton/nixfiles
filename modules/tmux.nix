@@ -1,5 +1,5 @@
 {
-  home.desktop =
+  home.personal =
     { pkgs, ... }:
     {
       programs.tmux = {
@@ -62,7 +62,7 @@
       xdg.configFile."tmux/tmux.conf".force = true;
     };
 
-  darwin.base =
+  darwin.workstation =
     { pkgs, ... }:
     {
       environment.systemPackages = [ pkgs.tmux ];

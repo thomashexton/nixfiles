@@ -5,7 +5,8 @@
     system = "x86_64-linux";
     modules = [
       config.nixos.base
-      config.nixos.desktop
+      config.nixos.workstation
+      config.nixos.personal
       config.nixos.gaming
       config.nixos.deskflowServer
       config.nixos.remoteAccess

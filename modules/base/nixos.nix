@@ -16,10 +16,9 @@
     home-manager.users.thomashexton.imports = [ config.home.base ];
   };
 
-  nixos.desktop.home-manager.users.thomashexton.imports = [
-    config.home.desktop
-    config.home.nixosDesktop
-  ];
+  nixos.workstation.home-manager.users.thomashexton.imports = [ config.home.nixos ];
+
+  nixos.personal.home-manager.users.thomashexton.imports = [ config.home.personal ];
 
   nixos.gaming.home-manager.users.thomashexton.imports = [ config.home.gaming ];
 }

@@ -7,13 +7,13 @@ let
   ];
 in
 {
-  darwin.base =
+  darwin.workstation =
     { pkgs, ... }:
     {
       fonts.packages = nerdFonts pkgs;
     };
 
-  nixos.desktop =
+  nixos.workstation =
     { pkgs, ... }:
     {
       fonts.packages = nerdFonts pkgs;

@@ -4,7 +4,8 @@
   flake.darwinConfigurations.macbook-pro = inputs.nix-darwin.lib.darwinSystem {
     modules = [
       config.darwin.base
-      config.darwin.canva
+      config.darwin.workstation
+      config.darwin.professional
       (
         { ... }:
         {
