@@ -1,8 +1,13 @@
 # Everything Claude Code: shared settings + statusline, plus work-only extras.
 {
   flake.modules.homeManager.claude =
-    { config, ... }:
+    { config, pkgs, ... }:
     {
+      home.packages = [
+        pkgs.unstable.claude-code
+        pkgs.jq # required by statusline-command.sh below
+      ];
+
       home.file.".claude/settings.json" = {
         force = true;
         source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/nixfiles/modules/claude/settings.json";

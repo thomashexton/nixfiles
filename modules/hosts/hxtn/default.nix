@@ -217,6 +217,7 @@
             { lib, pkgs, ... }:
             {
               imports = with config.flake.modules.homeManager; [
+              claude
               codex
               git
               tmux
