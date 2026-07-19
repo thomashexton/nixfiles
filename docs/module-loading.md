@@ -14,6 +14,10 @@ list of feature files. There are two distinct operations:
    import reusable Home Manager profiles or contain tightly scoped user
    settings directly.
 
+`modules/core/options.nix` explicitly declares every permitted profile. Feature
+modules may contribute to those profiles, but an unknown or misspelled profile
+name is an evaluation error.
+
 An arrow labelled **discovers** below means flake-parts module discovery. An
 arrow labelled **selects** or **HM imports** means Nix module composition.
 
@@ -24,7 +28,7 @@ flowchart TD
     Flake["flake.nix"] -->|"calls"| MkFlake["flake-parts.lib.mkFlake"]
     ImportTree["import-tree ./modules"] -->|"supplies one module tree"| MkFlake
 
-    MkFlake -->|"discovers as peers"| Infrastructure["Infrastructure modules<br/>options.nix, formatter.nix, base modules"]
+    MkFlake -->|"discovers as peers"| Infrastructure["Infrastructure modules<br/>core/*, formatter.nix"]
     MkFlake -->|"discovers as peers"| Features["Feature modules<br/>git.nix, gaming.nix, plasma.nix, …"]
     MkFlake -->|"discovers as peers"| Hosts["Host constructors<br/>mac-mini, macbook-pro, hxtn"]
 
@@ -109,22 +113,22 @@ the profile is not owned by whichever file happens to appear first.
 
 | Profile | Contributing files |
 | --- | --- |
-| `darwin.base` | `aerospace.nix`, `appcleaner.nix`, `base/darwin.nix`, `base/unstable-overlay.nix`, `codex/codex.nix`, `developer-tools.nix`, `deskflow.nix`, `homebrew.nix`, `karabiner/karabiner.nix`, `shell.nix` |
+| `darwin.base` | `aerospace.nix`, `appcleaner.nix`, `core/darwin.nix`, `core/unstable-overlay.nix`, `codex/codex.nix`, `developer-tools.nix`, `deskflow.nix`, `homebrew.nix`, `karabiner/karabiner.nix`, `shell.nix` |
 | `darwin.workstation` | `alacritty/alacritty.nix`, `fonts.nix`, `git.nix`, `tmux.nix`, `zed.nix` |
-| `darwin.personal` | `1password.nix`, `base/darwin.nix`, `claude/claude.nix`, `cursor.nix`, `dropbox.nix`, `metadatics.nix`, `streamrip.nix`, `zsh.nix` |
-| `darwin.professional` | `base/darwin.nix` |
-| `nixos.base` | `base/nixos.nix`, `base/unstable-overlay.nix`, `codex/codex.nix`, `shell.nix` |
-| `nixos.workstation` | `base/nixos.nix`, `alacritty/alacritty.nix`, `audio.nix`, `developer-tools.nix`, `fonts.nix`, `git.nix`, `graphics.nix`, `keyboard.nix`, `zed.nix` |
-| `nixos.personal` | `1password.nix`, `base/nixos.nix`, `claude/claude.nix`, `cursor.nix`, `dropbox.nix` |
-| `nixos.gaming` | `base/nixos.nix`, `gaming.nix` |
+| `darwin.personal` | `1password.nix`, `core/darwin.nix`, `claude/claude.nix`, `cursor.nix`, `dropbox.nix`, `metadatics.nix`, `streamrip.nix`, `zsh.nix` |
+| `darwin.professional` | `core/darwin.nix` |
+| `nixos.base` | `core/nixos.nix`, `core/unstable-overlay.nix`, `codex/codex.nix`, `shell.nix` |
+| `nixos.workstation` | `core/nixos.nix`, `alacritty/alacritty.nix`, `audio.nix`, `developer-tools.nix`, `fonts.nix`, `git.nix`, `graphics.nix`, `keyboard.nix`, `zed.nix` |
+| `nixos.personal` | `1password.nix`, `core/nixos.nix`, `claude/claude.nix`, `cursor.nix`, `dropbox.nix` |
+| `nixos.gaming` | `core/nixos.nix`, `gaming.nix` |
 | `nixos.plasma` | `plasma.nix` |
 | `nixos.hyprland` | `hyprland.nix` |
 | `nixos.deskflowServer` | `deskflow.nix` |
 | `nixos.remoteAccess` | `remote-access.nix` |
-| `home.base` | `base/home.nix`, `claude/claude.nix`, `codex/codex.nix` |
+| `home.base` | `core/home.nix`, `alacritty/alacritty.nix`, `claude/claude.nix`, `codex/codex.nix` |
 | `home.darwin` | `karabiner/karabiner.nix` |
 | `home.nixos` | `zed.nix` |
-| `home.personal` | `alacritty/alacritty.nix`, `developer-tools.nix`, `git.nix`, `tmux.nix` |
+| `home.personal` | `developer-tools.nix`, `git.nix`, `tmux.nix` |
 | `home.professional` | `claude/canva.nix` |
 | `home.gaming` | `gaming.nix` |
 | `home.plasma` | `plasma.nix` |

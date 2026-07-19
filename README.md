@@ -58,7 +58,8 @@ Homebrew only when nixpkgs does not support the application on macOS.
 Profile names are independent labels, not an inheritance hierarchy. For
 example, `darwin.personal` does not include `darwin.base`; `mac-mini` explicitly
 selects both. The only automatic composition is the Home Manager imports shown
-below.
+below. `modules/core/options.nix` is the source of truth for every permitted
+profile name; adding a profile starts by declaring it there.
 
 As a rule of thumb:
 

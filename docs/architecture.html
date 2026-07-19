@@ -187,7 +187,7 @@
   <div class="pipeline">
     <div class="pstep"><h4>flake.nix</h4><p>Declares inputs, then makes exactly one call: <span class="mono">mkFlake (import-tree ./modules)</span>.</p></div>
     <div class="pstep"><h4>import-tree scans</h4><p>Every <span class="mono">.nix</span> under <span class="mono">modules/</span> loads — features, hosts, options alike. Paths containing <span class="mono">/_</span> are skipped.</p></div>
-    <div class="pstep"><h4>Files fill profiles</h4><p>Each file merges settings <em>into</em> named profiles: <span class="mono">darwin.*</span>, <span class="mono">nixos.*</span>, <span class="mono">home.*</span> (declared in <span class="mono">options.nix</span>).</p></div>
+    <div class="pstep"><h4>Files fill profiles</h4><p>Each file merges settings <em>into</em> named profiles: <span class="mono">darwin.*</span>, <span class="mono">nixos.*</span>, <span class="mono">home.*</span> (declared in <span class="mono">core/options.nix</span>).</p></div>
     <div class="pstep"><h4>Hosts select</h4><p>A host file lists which profiles it wants and hands them to <span class="mono">darwinSystem</span> / <span class="mono">nixosSystem</span>.</p></div>
     <div class="pstep"><h4>Outputs appear</h4><p>Ordinary <span class="mono">darwinConfigurations.*</span> and <span class="mono">nixosConfigurations.*</span> — what <span class="mono">just switch</span> builds.</p></div>
   </div>
@@ -231,7 +231,7 @@
       <li><strong>A new app/tool</strong> → one new file in <code>modules/</code>. Inside it, assign to the profile(s) matching who should get it: every machine → <code>*.base</code>; dev machines → <code>*.workstation</code>; personal life → <code>*.personal</code>; work → <code>home.professional</code>. Put personal Mac-only user settings below <code>darwin.personal.home-manager.users.thomashexton</code>.</li>
       <li><strong>System-level vs user-level?</strong> Binary on PATH for everyone → <code>darwin.*</code>/<code>nixos.*</code> <code>environment.systemPackages</code>. Reusable dotfiles or per-user packages → the matching <code>home.*</code>; settings specific to one system profile → its nested <code>home-manager.users</code> configuration.</li>
       <li><strong>Give an existing feature to another machine</strong> → usually nothing to edit in the feature; change which <em>profile</em> it assigns to, or add the profile to the host's select-list.</li>
-      <li><strong>A whole new capability class</strong> (like gaming was) → invent a profile name, wire its <code>home.*</code> import in <code>base/darwin.nix</code> or <code>base/nixos.nix</code>, select it from a host.</li>
+      <li><strong>A whole new capability class</strong> (like gaming was) → declare the profile in <code>core/options.nix</code>, wire its <code>home.*</code> import in <code>core/darwin.nix</code> or <code>core/nixos.nix</code>, then select it from a host.</li>
       <li><strong>Machine-specific one-offs</strong> (hostname, boot, hardware) → the literal block at the bottom of that host's file. Nowhere else.</li>
     </ol>
   </div>
@@ -242,7 +242,7 @@
   <ul>
     <li><code>modules/**/_*.nix</code> is invisible to import-tree — only <code>hosts/hxtn/_hardware-configuration.nix</code> uses this, imported explicitly by <code>hxtn.nix</code>.</li>
     <li>Profiles also pull from flake inputs: <code>darwin.base</code> ← Determinate + home-manager modules; <code>nixos.base</code> ← home-manager; <code>nixos.gaming</code> ← nix-citizen; <code>nixos.hyprland</code> ← a pinned Hyprland (see README for the removal criteria).</li>
-    <li><code>options.nix</code> declares the three profile namespaces + <code>flake.darwinConfigurations</code>; <code>formatter.nix</code> is plain flake-parts <code>perSystem</code>. Neither is a feature.</li>
+    <li><code>core/options.nix</code> declares the three profile namespaces, every permitted profile name, and <code>flake.darwinConfigurations</code>; unknown profile names are errors. <code>formatter.nix</code> is plain flake-parts <code>perSystem</code>. Neither is a feature.</li>
     <li>Companion reference: <code>docs/module-loading.md</code> (same facts, prose + mermaid). This page: <code>docs/architecture.html</code>.</li>
   </ul>
 </footer>
@@ -286,10 +286,10 @@
       sys: ["nixos.base", "nixos.workstation", "nixos.plasma", "nixos.personal", "nixos.gaming", "nixos.deskflowServer", "nixos.remoteAccess"] }
   };
   var FILES = [
-    ["base/darwin.nix",        ["darwin.base","darwin.personal","darwin.professional"]],
-    ["base/nixos.nix",         ["nixos.base","nixos.workstation","nixos.personal","nixos.gaming"]],
-    ["base/home.nix",          ["home.base"]],
-    ["base/unstable-overlay.nix",["darwin.base","nixos.base"]],
+    ["core/darwin.nix",        ["darwin.base","darwin.personal","darwin.professional"]],
+    ["core/nixos.nix",         ["nixos.base","nixos.workstation","nixos.personal","nixos.gaming"]],
+    ["core/home.nix",          ["home.base"]],
+    ["core/unstable-overlay.nix",["darwin.base","nixos.base"]],
     ["appcleaner.nix",          ["darwin.base"]],
     ["shell.nix",              ["darwin.base","nixos.base"]],
     ["homebrew.nix",           ["darwin.base"]],
@@ -299,7 +299,7 @@
     ["claude/canva.nix",       ["home.professional"]],
     ["karabiner/karabiner.nix",["darwin.base","home.darwin"]],
     ["deskflow.nix",           ["darwin.base","nixos.deskflowServer"]],
-    ["alacritty/alacritty.nix",["darwin.workstation","nixos.workstation","home.personal"]],
+    ["alacritty/alacritty.nix",["darwin.workstation","nixos.workstation","home.base"]],
     ["git.nix",                ["darwin.workstation","nixos.workstation","home.personal"]],
     ["tmux.nix",               ["darwin.workstation","home.personal"]],
     ["zed.nix",                ["darwin.workstation","nixos.workstation","home.nixos"]],

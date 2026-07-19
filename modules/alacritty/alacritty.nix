@@ -11,7 +11,7 @@
       environment.systemPackages = [ pkgs.alacritty ];
     };
 
-  home.personal =
+  home.base =
     { config, pkgs, ... }:
     {
       xdg.configFile."alacritty/alacritty.toml" = {
