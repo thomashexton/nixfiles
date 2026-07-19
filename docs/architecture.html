@@ -257,9 +257,10 @@
   var SYSTEM_HOME_IMPORTS = {
     "darwin.base": ["home.base", "home.darwin"],
     "darwin.personal": ["home.personal"],
+    "darwin.workstation": ["home.workstation"],
     "darwin.professional": ["home.professional"],
     "nixos.base": ["home.base"],
-    "nixos.workstation": ["home.nixos"],
+    "nixos.workstation": ["home.workstation"],
     "nixos.personal": ["home.personal"],
     "nixos.gaming": ["home.gaming"],
     "nixos.plasma": ["home.plasma"],
@@ -272,9 +273,9 @@
     "nixos.personal": "personal things", "nixos.gaming": "Steam, Star Citizen…",
     "nixos.plasma": "KDE desktop", "nixos.hyprland": "Hyprland desktop (alt)",
     "nixos.deskflowServer": "KVM server role", "nixos.remoteAccess": "SSH",
-    "home.base": "always-on dotfiles", "home.darwin": "mac-only dotfiles",
+    "home.base": "always-on dotfiles", "home.workstation": "cross-platform workstation apps", "home.darwin": "mac-only dotfiles",
     "home.personal": "personal dotfiles",
-    "home.professional": "work dotfiles", "home.nixos": "linux-only dotfiles",
+    "home.professional": "work dotfiles",
     "home.gaming": "gaming user bits", "home.plasma": "KDE user bits", "home.hyprland": "Hyprland user bits"
   };
   var HOSTS = {
@@ -286,7 +287,7 @@
       sys: ["nixos.base", "nixos.workstation", "nixos.plasma", "nixos.personal", "nixos.gaming", "nixos.deskflowServer", "nixos.remoteAccess"] }
   };
   var FILES = [
-    ["core/darwin.nix",        ["darwin.base","darwin.personal","darwin.professional"]],
+    ["core/darwin.nix",        ["darwin.base","darwin.workstation","darwin.personal","darwin.professional"]],
     ["core/nixos.nix",         ["nixos.base","nixos.workstation","nixos.personal","nixos.gaming"]],
     ["core/home.nix",          ["home.base"]],
     ["core/unstable-overlay.nix",["darwin.base","nixos.base"]],
@@ -302,7 +303,7 @@
     ["alacritty/alacritty.nix",["darwin.workstation","nixos.workstation","home.base"]],
     ["git.nix",                ["darwin.workstation","nixos.workstation","home.personal"]],
     ["tmux.nix",               ["darwin.workstation","home.personal"]],
-    ["zed.nix",                ["darwin.workstation","nixos.workstation","home.nixos"]],
+    ["zed.nix",                ["home.workstation"]],
     ["fonts.nix",              ["darwin.workstation","nixos.workstation"]],
     ["1password.nix",          ["darwin.personal","nixos.personal"]],
     ["aerospace.nix",          ["darwin.base"]],
@@ -314,6 +315,7 @@
     ["audio.nix",              ["nixos.workstation"]],
     ["graphics.nix",           ["nixos.workstation"]],
     ["keyboard.nix",           ["nixos.workstation"]],
+    ["workstation.nix",        ["nixos.workstation","home.workstation"]],
     ["gaming.nix",             ["nixos.gaming","home.gaming"]],
     ["plasma.nix",             ["nixos.plasma","home.plasma"]],
     ["hyprland.nix",           ["nixos.hyprland","home.hyprland"]],

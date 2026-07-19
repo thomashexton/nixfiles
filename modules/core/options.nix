@@ -31,8 +31,8 @@ in
 
     home = {
       base = deferredProfile "Home Manager configuration shared by every user environment.";
+      workstation = deferredProfile "Home Manager applications and configuration shared by workstations.";
       darwin = deferredProfile "Home Manager configuration shared by nix-darwin hosts.";
-      nixos = deferredProfile "Home Manager configuration shared by NixOS workstations.";
       personal = deferredProfile "Personal Home Manager configuration.";
       professional = deferredProfile "Professional Home Manager configuration.";
       gaming = deferredProfile "Gaming-related Home Manager configuration.";

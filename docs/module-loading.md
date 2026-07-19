@@ -75,6 +75,7 @@ flowchart LR
 
         DB -->|"HM imports"| HB["home.base"]
         DB -->|"HM imports"| HD["home.darwin"]
+        DW -->|"HM imports"| HWd["home.workstation"]
         DP -->|"HM imports"| HP["home.personal"]
         DPro -->|"HM imports"| HPro["home.professional"]
     end
@@ -91,7 +92,7 @@ flowchart LR
         Hxtn -->|"imports directly"| HW["_hardware-configuration.nix"]
 
         NB -->|"HM imports"| HB2["home.base"]
-        NW -->|"HM imports"| HN["home.nixos"]
+        NW -->|"HM imports"| HWn["home.workstation"]
         NP -->|"HM imports"| HP2["home.personal"]
         NG -->|"HM imports"| HG["home.gaming"]
         NPlasma -->|"HM imports"| HPlasma["home.plasma"]
@@ -114,11 +115,11 @@ the profile is not owned by whichever file happens to appear first.
 | Profile | Contributing files |
 | --- | --- |
 | `darwin.base` | `aerospace.nix`, `appcleaner.nix`, `core/darwin.nix`, `core/unstable-overlay.nix`, `codex/codex.nix`, `developer-tools.nix`, `deskflow.nix`, `homebrew.nix`, `karabiner/karabiner.nix`, `shell.nix` |
-| `darwin.workstation` | `alacritty/alacritty.nix`, `fonts.nix`, `git.nix`, `tmux.nix`, `zed.nix` |
+| `darwin.workstation` | `alacritty/alacritty.nix`, `core/darwin.nix`, `fonts.nix`, `git.nix`, `tmux.nix` |
 | `darwin.personal` | `1password.nix`, `core/darwin.nix`, `claude/claude.nix`, `cursor.nix`, `dropbox.nix`, `metadatics.nix`, `streamrip.nix`, `zsh.nix` |
 | `darwin.professional` | `core/darwin.nix` |
 | `nixos.base` | `core/nixos.nix`, `core/unstable-overlay.nix`, `codex/codex.nix`, `shell.nix` |
-| `nixos.workstation` | `core/nixos.nix`, `alacritty/alacritty.nix`, `audio.nix`, `developer-tools.nix`, `fonts.nix`, `git.nix`, `graphics.nix`, `keyboard.nix`, `zed.nix` |
+| `nixos.workstation` | `core/nixos.nix`, `alacritty/alacritty.nix`, `audio.nix`, `developer-tools.nix`, `fonts.nix`, `git.nix`, `graphics.nix`, `keyboard.nix`, `workstation.nix` |
 | `nixos.personal` | `1password.nix`, `core/nixos.nix`, `claude/claude.nix`, `cursor.nix`, `dropbox.nix` |
 | `nixos.gaming` | `core/nixos.nix`, `gaming.nix` |
 | `nixos.plasma` | `plasma.nix` |
@@ -126,8 +127,8 @@ the profile is not owned by whichever file happens to appear first.
 | `nixos.deskflowServer` | `deskflow.nix` |
 | `nixos.remoteAccess` | `remote-access.nix` |
 | `home.base` | `core/home.nix`, `alacritty/alacritty.nix`, `claude/claude.nix`, `codex/codex.nix` |
+| `home.workstation` | `workstation.nix`, `zed.nix` |
 | `home.darwin` | `karabiner/karabiner.nix` |
-| `home.nixos` | `zed.nix` |
 | `home.personal` | `developer-tools.nix`, `git.nix`, `tmux.nix` |
 | `home.professional` | `claude/canva.nix` |
 | `home.gaming` | `gaming.nix` |

@@ -18,8 +18,6 @@
     { pkgs, ... }:
     {
       environment.systemPackages = with pkgs; [
-        nixd
-        nixfmt-rfc-style
         nodejs_20
         vim
         wget

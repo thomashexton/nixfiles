@@ -28,5 +28,7 @@
 
   darwin.personal.home-manager.users.thomashexton.imports = [ config.home.personal ];
 
+  darwin.workstation.home-manager.users.thomashexton.imports = [ config.home.workstation ];
+
   darwin.professional.home-manager.users.thomashexton.imports = [ config.home.professional ];
 }

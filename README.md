@@ -78,7 +78,7 @@ As a rule of thumb:
 | Profile | Purpose | Home profiles imported | Selected by |
 |---------|---------|------------------------|-------------|
 | `darwin.base` | Foundation and system features required on every Mac | `home.base`, `home.darwin` | `mac-mini`, `macbook-pro` |
-| `darwin.workstation` | Interactive workstation and development applications | — | `mac-mini`, `macbook-pro` |
+| `darwin.workstation` | Interactive workstation and development applications | `home.workstation` | `mac-mini`, `macbook-pro` |
 | `darwin.personal` | Personal Mac applications, policy, and role-specific settings | `home.personal` | `mac-mini` |
 | `darwin.professional` | Professional/work role settings | `home.professional` | `macbook-pro` |
 
@@ -87,7 +87,7 @@ As a rule of thumb:
 | Profile | Purpose | Home profiles imported | Selected by |
 |---------|---------|------------------------|-------------|
 | `nixos.base` | Foundation and system features required on every NixOS host | `home.base` | `hxtn` |
-| `nixos.workstation` | Interactive workstation, development, audio, graphics, and input support | `home.nixos` | `hxtn` |
+| `nixos.workstation` | Interactive workstation, development, audio, graphics, and input support | `home.workstation` | `hxtn` |
 | `nixos.personal` | Personal-machine policy and user configuration | `home.personal` | `hxtn` |
 | `nixos.gaming` | Gaming applications, services, and launchers | `home.gaming` | `hxtn` |
 | `nixos.plasma` | KDE Plasma desktop session | `home.plasma` | `hxtn` currently |
@@ -100,10 +100,10 @@ As a rule of thumb:
 | Profile | Purpose | Imported through |
 |---------|---------|------------------|
 | `home.base` | User identity plus shared Claude Code and Codex packages | `darwin.base`, `nixos.base` |
+| `home.workstation` | Cross-platform workstation applications and configuration, including Zen, Zed, and Nix language tooling | `darwin.workstation`, `nixos.workstation` |
 | `home.darwin` | User configuration shared by every Mac | `darwin.base` |
 | `home.personal` | Cross-platform personal configuration such as Alacritty, Git, tmux, and `just` | `darwin.personal`, `nixos.personal` |
 | `home.professional` | Work-specific user configuration and Canva Claude instructions | `darwin.professional` |
-| `home.nixos` | NixOS workstation user configuration, currently Zed settings | `nixos.workstation` |
 | `home.gaming` | Per-user gaming applications | `nixos.gaming` |
 | `home.plasma` | Plasma-session user configuration | `nixos.plasma` |
 | `home.hyprland` | Hyprland, Waybar, and session user configuration | `nixos.hyprland` |
@@ -112,9 +112,9 @@ As a rule of thumb:
 
 | Complete host output | Platform | System profiles selected | Home profiles reached |
 |----------------------|----------|--------------------------|-----------------------|
-| `darwinConfigurations.mac-mini` | `aarch64-darwin` | `darwin.base`, `darwin.workstation`, `darwin.personal` | `home.base`, `home.darwin`, `home.personal` |
-| `darwinConfigurations.macbook-pro` | `aarch64-darwin` | `darwin.base`, `darwin.workstation`, `darwin.professional` | `home.base`, `home.darwin`, `home.professional` |
-| `nixosConfigurations.hxtn` | `x86_64-linux` | `nixos.base`, `nixos.workstation`, `nixos.plasma`, `nixos.personal`, `nixos.gaming`, `nixos.deskflowServer`, `nixos.remoteAccess` | `home.base`, `home.nixos`, `home.plasma`, `home.personal`, `home.gaming` |
+| `darwinConfigurations.mac-mini` | `aarch64-darwin` | `darwin.base`, `darwin.workstation`, `darwin.personal` | `home.base`, `home.darwin`, `home.workstation`, `home.personal` |
+| `darwinConfigurations.macbook-pro` | `aarch64-darwin` | `darwin.base`, `darwin.workstation`, `darwin.professional` | `home.base`, `home.darwin`, `home.workstation`, `home.professional` |
+| `nixosConfigurations.hxtn` | `x86_64-linux` | `nixos.base`, `nixos.workstation`, `nixos.plasma`, `nixos.personal`, `nixos.gaming`, `nixos.deskflowServer`, `nixos.remoteAccess` | `home.base`, `home.workstation`, `home.plasma`, `home.personal`, `home.gaming` |
 
 The staged Hyprland change replaces `nixos.plasma` with `nixos.hyprland`; that
 also replaces `home.plasma` with `home.hyprland`.

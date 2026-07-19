@@ -29,7 +29,7 @@ in
       home-manager.users.thomashexton.imports = [ baseHome ];
     };
 
-  nixos.workstation.home-manager.users.thomashexton.imports = [ config.home.nixos ];
+  nixos.workstation.home-manager.users.thomashexton.imports = [ config.home.workstation ];
 
   nixos.personal.home-manager.users.thomashexton.imports = [ config.home.personal ];
 

@@ -1,19 +1,13 @@
 {
-  darwin.workstation =
+  home.workstation =
     { pkgs, ... }:
     {
-      environment.systemPackages = [ pkgs.zed-editor ];
-    };
+      home.packages = with pkgs; [
+        nixd
+        nixfmt-rfc-style
+        zed-editor
+      ];
 
-  nixos.workstation =
-    { pkgs, ... }:
-    {
-      environment.systemPackages = [ pkgs.zed-editor ];
-    };
-
-  home.nixos =
-    { pkgs, ... }:
-    {
       xdg.configFile."zed/settings.json".source = (pkgs.formats.json { }).generate "zed-settings.json" {
         ui_font_size = 13;
         buffer_font_size = 13;
