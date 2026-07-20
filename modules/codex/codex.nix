@@ -1,6 +1,6 @@
 {
-  darwin.base.environment.etc."codex/config.toml".source = ./config.toml;
-  nixos.base.environment.etc."codex/config.toml".source = ./config.toml;
+  darwin.base.environment.etc."codex/config.toml".text = builtins.readFile ./config.toml;
+  nixos.base.environment.etc."codex/config.toml".text = builtins.readFile ./config.toml;
 
   home.base =
     { pkgs, ... }:
