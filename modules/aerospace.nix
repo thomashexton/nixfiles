@@ -2,11 +2,8 @@
   darwin.base.home-manager.users.thomashexton = {
     programs.aerospace = {
       enable = true;
-      launchd.enable = false;
+      launchd.enable = true;
       userSettings = {
-        after-login-command = [ ];
-        after-startup-command = [ ];
-        start-at-login = true;
         enable-normalization-flatten-containers = true;
         enable-normalization-opposite-orientation-for-nested-containers = true;
         accordion-padding = 360;

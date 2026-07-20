@@ -10,7 +10,7 @@
         #   settings.main.capslock = "overload(control, esc)";
         # };
 
-        # Logitech's USB vendor ID is 046d.  Keep this macOS-style modifier
+        # Logitech's USB vendor ID is k:046d:c548.  Keep this macOS-style modifier
         # placement local to Logitech keyboards instead of changing the
         # laptop's built-in keyboard or any other external keyboard.
         keyboards.logitech = {
