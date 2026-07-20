@@ -1,5 +1,8 @@
 {
-  darwin.base.services.karabiner-elements.enable = true;
+  # Karabiner 15.7 replaced its legacy launchd services with v2 app bundles.
+  # nix-darwin's service module still references the removed legacy plists, so
+  # let the upstream cask install and manage Karabiner's privileged services.
+  darwin.base.homebrew.casks = [ "karabiner-elements" ];
 
   home.darwin =
     { config, ... }:
