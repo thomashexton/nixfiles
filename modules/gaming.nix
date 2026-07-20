@@ -6,8 +6,6 @@
     {
       imports = [ inputs.nix-citizen.nixosModules.default ];
 
-      nixpkgs.overlays = [ (_final: prev: { unixodbc = prev.unixODBC; }) ];
-
       nix.settings.extra-substituters = [ "https://nix-citizen.cachix.org" ];
       nix.settings.extra-trusted-public-keys = [
         "nix-citizen.cachix.org-1:lPMkWc2X8XD4/7YPEEwXKKBg+SVbYTVrAaLA2wQTKCo="
