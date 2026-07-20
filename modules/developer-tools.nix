@@ -9,6 +9,7 @@
         gh
         lazygit
         neovim
+        ripgrep
         stow
         tree-sitter
       ];
