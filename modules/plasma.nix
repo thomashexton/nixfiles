@@ -35,7 +35,19 @@
           fi
 
           switch_shortcut="Alt+$shortcut_number"
-          window_shortcut="Alt+Shift+$shortcut_number"
+          case "$shortcut_number" in
+            1) shifted_symbol='!' ;;
+            2) shifted_symbol='@' ;;
+            3) shifted_symbol='#' ;;
+            4) shifted_symbol='$' ;;
+            5) shifted_symbol='%' ;;
+            6) shifted_symbol='^' ;;
+            7) shifted_symbol='&' ;;
+            8) shifted_symbol='*' ;;
+            9) shifted_symbol='(' ;;
+            0) shifted_symbol=')' ;;
+          esac
+          window_shortcut="Alt+$shifted_symbol"
 
           "$kwrite" --file "$HOME/.config/kglobalshortcutsrc" --group kwin \
             --key "Switch to Desktop $desktop" \
