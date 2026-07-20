@@ -14,7 +14,7 @@
         # placement local to Logitech keyboards instead of changing the
         # laptop's built-in keyboard or any other external keyboard.
         keyboards.logitech = {
-          ids = [ "046d:*" ];
+          ids = [ "k:046d:c548" ];
           settings.main = {
             capslock = "overload(control, esc)";
             rightmeta = "rightalt";
