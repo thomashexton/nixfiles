@@ -1,6 +1,26 @@
 {
   nixos.workstation =
     { pkgs, ... }:
+    let
+      # The RØDECaster Duo exposes three logical stereo devices across its two
+      # physical USB connections. ALSA/WirePlumber's profile-index names are
+      # opaque, so give each Pro Audio node the name used by RØDE:
+      #   USB1 pro-{output,input}-1 = Main
+      #   USB1 pro-{output,input}-0 = Chat
+      #   USB2 pro-{output,input}-0 = Secondary
+      #
+      # These identifiers come from the unit's USB descriptors and remain stable
+      # across reboots and probe order.
+      rodeUsb1 = "usb-R__DE_RODECaster_Duo_IT0003959-00";
+      rodeUsb2 = "usb-R__DE_R__DECaster_Duo-00";
+      renameRode = device: stream: profile: description: nick: {
+        matches = [ { "node.name" = "alsa_${stream}.${device}.${profile}"; } ];
+        actions.update-props = {
+          "node.description" = description;
+          "node.nick" = nick;
+        };
+      };
+    in
     {
       security.rtkit.enable = true;
 
@@ -24,6 +44,20 @@
               "default.clock.max-quantum" = quantum;
             };
           };
+
+        # Rename the RØDECaster's stereo pairs to the friendly macOS-style names.
+        # Only the display name changes — node.name is untouched, so KDE's saved
+        # per-device volumes and default-device choice carry over unchanged.
+        wireplumber.extraConfig."51-rodecaster-names" = {
+          "monitor.alsa.rules" = [
+            (renameRode rodeUsb1 "output" "pro-output-1" "RØDECaster USB1 Main" "USB1 Main")
+            (renameRode rodeUsb1 "output" "pro-output-0" "RØDECaster USB1 Chat" "USB1 Chat")
+            (renameRode rodeUsb1 "input" "pro-input-1" "RØDECaster USB1 Main" "USB1 Main")
+            (renameRode rodeUsb1 "input" "pro-input-0" "RØDECaster USB1 Chat" "USB1 Chat")
+            (renameRode rodeUsb2 "output" "pro-output-0" "RØDECaster USB2 Secondary" "USB2 Secondary")
+            (renameRode rodeUsb2 "input" "pro-input-0" "RØDECaster USB2 Secondary" "USB2 Secondary")
+          ];
+        };
       };
 
       environment.systemPackages = [ pkgs.pavucontrol ];
