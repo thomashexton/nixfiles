@@ -4,14 +4,29 @@
     casks = [ "deskflow" ];
   };
 
+  # Deskflow otherwise uses different state directories depending on whether
+  # Finder or a shell with XDG_CONFIG_HOME launches it. Keep one mutable set of
+  # settings, TLS certificates, and trusted fingerprints for both launch paths.
+  home.darwin =
+    { config, ... }:
+    {
+      home.file."Library/Deskflow" = {
+        force = true;
+        source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.config/Deskflow";
+      };
+    };
+
   nixos.deskflowServer =
     { pkgs, ... }:
     {
       environment.systemPackages = [
         pkgs.unstable.deskflow
+        pkgs.wl-clipboard # Wayland clipboard backend used by Deskflow
         pkgs.qt6.qtsvg # Required for Deskflow system tray icon rendering
       ];
 
+      # Deskflow's GUI owns the mutable server layout in
+      # ~/.config/Deskflow/deskflow-server.conf.
       networking.firewall.allowedTCPPorts = [ 24800 ];
       networking.interfaces.enp14s0.wakeOnLan.enable = true;
 
@@ -20,19 +35,5 @@
       systemd.targets.suspend.enable = false;
       systemd.targets.hibernate.enable = false;
       systemd.targets.hybrid-sleep.enable = false;
-
-      environment.etc."Deskflow/deskflow-server.conf".text = ''
-        section: screens
-            hxtn:
-            macbook-pro:
-        end
-
-        section: links
-            hxtn:
-                up = macbook-pro
-            macbook-pro:
-                down = hxtn
-        end
-      '';
     };
 }
