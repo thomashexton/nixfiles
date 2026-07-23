@@ -364,6 +364,23 @@ See [File sharing between `mac-mini` and `hxtn`](docs/file-sharing.md) for the
 SMB addresses, credentials, macOS privacy controls, NixOS implementation, and
 troubleshooting steps.
 
+### Deskflow configuration ownership
+
+Deskflow rewrites both its application settings and generated server layout.
+Home Manager therefore links those paths to mutable files in
+`modules/deskflow/` with `mkOutOfStoreSymlink`; GUI changes update the tracked
+files directly. TLS keys, certificates, and trusted fingerprints remain
+untracked runtime state under the same Deskflow configuration directory.
+`Deskflow.conf` stores the GUI model, which Deskflow renders into
+`deskflow-server.conf` for its core process; their overlapping settings are
+intentional.
+
+On macOS, Finder and shell launches can select different Deskflow state
+directories. `~/Library/Deskflow` links to `~/.config/Deskflow` so both launch
+paths share that runtime state. On `hxtn`, Deskflow 1.26 still requires
+`wl-clipboard` for clipboard access under Wayland. Remove that package and the
+`wlClipboard` setting once Deskflow uses portal clipboard support.
+
 ### Prepared Hyprland and Deskflow InputCapture
 
 `hxtn` still selects `config.nixos.plasma`; the alternative

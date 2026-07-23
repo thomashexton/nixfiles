@@ -35,12 +35,10 @@
 
       environment.systemPackages = [
         pkgs.unstable.deskflow
-        pkgs.wl-clipboard # Wayland clipboard backend used by Deskflow
-        pkgs.qt6.qtsvg # Required for Deskflow system tray icon rendering
+        pkgs.wl-clipboard # Remove once Deskflow uses portal clipboard support.
+        pkgs.qt6.qtsvg # Deskflow's tray icon otherwise fails to render.
       ];
 
-      # Deskflow's GUI owns the mutable server layout in
-      # ~/.config/Deskflow/deskflow-server.conf.
       networking.firewall.allowedTCPPorts = [ 24800 ];
       networking.interfaces.enp14s0.wakeOnLan.enable = true;
 
