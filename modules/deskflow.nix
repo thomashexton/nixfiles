@@ -19,6 +19,15 @@
   nixos.deskflowServer =
     { pkgs, ... }:
     {
+      home-manager.users.thomashexton =
+        { config, ... }:
+        {
+          xdg.configFile."Deskflow/Deskflow.conf" = {
+            force = true;
+            source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/nixfiles/modules/deskflow/Deskflow.conf";
+          };
+        };
+
       environment.systemPackages = [
         pkgs.unstable.deskflow
         pkgs.wl-clipboard # Wayland clipboard backend used by Deskflow
