@@ -3,6 +3,8 @@
     # Advertise the authenticated SMB share to macOS Finder over Bonjour.
     services.avahi = {
       enable = true;
+      # Resolve other Bonjour hosts such as mac-mini.local from NixOS.
+      nssmdns4 = true;
       publish = {
         enable = true;
         addresses = true;

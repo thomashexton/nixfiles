@@ -358,6 +358,12 @@ macOS by importing Determinate's nix-darwin module and setting
 `determinateNix.enable = true;`. On a fresh macOS install, the first
 activation still has to bootstrap `darwin-rebuild` via `nix run`.
 
+### File sharing
+
+See [File sharing between `mac-mini` and `hxtn`](docs/file-sharing.md) for the
+SMB addresses, credentials, macOS privacy controls, NixOS implementation, and
+troubleshooting steps.
+
 ### Prepared Hyprland and Deskflow InputCapture
 
 `hxtn` still selects `config.nixos.plasma`; the alternative
