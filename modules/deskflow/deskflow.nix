@@ -26,6 +26,11 @@
             force = true;
             source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/nixfiles/modules/deskflow/Deskflow.conf";
           };
+
+          xdg.configFile."Deskflow/deskflow-server.conf" = {
+            force = true;
+            source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/nixfiles/modules/deskflow/deskflow-server.conf";
+          };
         };
 
       environment.systemPackages = [
