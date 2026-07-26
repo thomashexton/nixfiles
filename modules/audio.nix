@@ -13,11 +13,11 @@
       # across reboots and probe order.
       rodeUsb1 = "usb-R__DE_RODECaster_Duo_IT0003959-00";
       rodeUsb2 = "usb-R__DE_R__DECaster_Duo-00";
-      renameRode = device: stream: profile: description: nick: {
+      renameRode = device: stream: profile: displayName: {
         matches = [ { "node.name" = "alsa_${stream}.${device}.${profile}"; } ];
         actions.update-props = {
-          "node.description" = description;
-          "node.nick" = nick;
+          "node.description" = displayName;
+          "node.nick" = displayName;
         };
       };
     in
@@ -32,7 +32,7 @@
         };
         pulse.enable = true;
         jack.enable = true;
-        extraConfig.pipewire."92-low-latency" =
+        extraConfig.pipewire."low-latency" =
           let
             quantum = 512;
           in
@@ -45,17 +45,17 @@
             };
           };
 
-        # Rename the RØDECaster's stereo pairs to the friendly macOS-style names.
+        # Rename the RØDECaster's stereo pairs to the friendly names.
         # Only the display name changes — node.name is untouched, so KDE's saved
         # per-device volumes and default-device choice carry over unchanged.
-        wireplumber.extraConfig."51-rodecaster-names" = {
+        wireplumber.extraConfig."rodecaster-names" = {
           "monitor.alsa.rules" = [
-            (renameRode rodeUsb1 "output" "pro-output-1" "RØDECaster USB1 Main" "USB1 Main")
-            (renameRode rodeUsb1 "output" "pro-output-0" "RØDECaster USB1 Chat" "USB1 Chat")
-            (renameRode rodeUsb1 "input" "pro-input-1" "RØDECaster USB1 Main" "USB1 Main")
-            (renameRode rodeUsb1 "input" "pro-input-0" "RØDECaster USB1 Chat" "USB1 Chat")
-            (renameRode rodeUsb2 "output" "pro-output-0" "RØDECaster USB2 Secondary" "USB2 Secondary")
-            (renameRode rodeUsb2 "input" "pro-input-0" "RØDECaster USB2 Secondary" "USB2 Secondary")
+            (renameRode rodeUsb1 "output" "pro-output-1" "RØDE Main")
+            (renameRode rodeUsb1 "output" "pro-output-0" "RØDE Chat")
+            (renameRode rodeUsb1 "input" "pro-input-1" "RØDE Main")
+            (renameRode rodeUsb1 "input" "pro-input-0" "RØDE Chat")
+            (renameRode rodeUsb2 "output" "pro-output-0" "RØDE Secondary")
+            (renameRode rodeUsb2 "input" "pro-input-0" "RØDE Secondary")
           ];
         };
       };
