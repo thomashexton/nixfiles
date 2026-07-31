@@ -52,11 +52,16 @@
     };
 
   home.gaming =
-    { pkgs, ... }:
+    { config, pkgs, ... }:
     {
       home.packages = with pkgs; [
         discord
         wowup-cf
       ];
+
+      xdg.configFile."MangoHud/hxtn-mangohud.conf" = {
+        force = true;
+        source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/nixfiles/modules/mangohud.conf";
+      };
     };
 }
