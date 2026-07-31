@@ -11,6 +11,10 @@
         "nix-citizen.cachix.org-1:lPMkWc2X8XD4/7YPEEwXKKBg+SVbYTVrAaLA2wQTKCo="
       ];
 
+      environment.sessionVariables = {
+        MANGOHUD_CONFIGFILE = "/home/thomashexton/.config/MangoHud/hxtn-mangohud.conf";
+      };
+
       environment.systemPackages = with pkgs; [
         bottles
         unstable.faugus-launcher
