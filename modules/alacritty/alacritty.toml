@@ -1,5 +1,9 @@
 [env]
 TERM = "xterm-256color"
+# Alacritty exports LC_ALL from the macOS system locale; SSH forwards it to
+# hosts lacking en_AU.UTF-8. Neutralise it and set the locale through LANG.
+LC_ALL = ""
+LANG = "en_AU.UTF-8"
 
 [font]
 size = 15.0

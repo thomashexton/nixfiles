@@ -71,6 +71,11 @@ trusted fingerprints remain untracked runtime state. On Wayland, Deskflow still
 requires `wl-clipboard`; remove that package and its `wlClipboard` setting once
 Deskflow uses portal clipboard support.
 
+Alacritty overrides `LC_ALL` because it exports the macOS system locale into
+every shell it spawns, which SSH then forwards to hosts that lack that locale.
+Remove the `LC_ALL` and `LANG` entries from `modules/alacritty/alacritty.toml`
+once Alacritty stops setting `LC_ALL` on macOS.
+
 The unselected Hyprland profile pins a matching Hyprland/XDPH pair to provide
 the InputCapture support required by Deskflow. The pin can be removed when the
 selected nixpkgs release provides a compatible pair.
