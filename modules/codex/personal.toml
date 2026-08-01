@@ -1,0 +1,20 @@
+# Use the full-access endpoint only when PocketSmith write access is intentional.
+[mcp_servers.pocketsmith]
+url = "https://mcp-readonly.pocketsmith.com/mcp"
+
+[mcp_servers.unifi-network]
+command = "op"
+args = [
+  "run",
+  "--",
+  "uvx",
+  "--python-preference",
+  "system",
+  "unifi-network-mcp@0.24.1",
+]
+
+[mcp_servers.unifi-network.env]
+UNIFI_NETWORK_HOST = "192.168.10.1"
+UNIFI_NETWORK_USERNAME = "op://Private/UniFi Network/username"
+UNIFI_NETWORK_PASSWORD = "op://Private/UniFi Network/password"
+UNIFI_NETWORK_VERIFY_SSL = "false"

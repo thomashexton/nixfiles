@@ -1,0 +1,4 @@
+interface:
+  display_name: "Nix Config Tutor"
+  short_description: "Adaptive quizzes grounded in your Nix configuration"
+  default_prompt: "Use $nix-config-tutor to quiz me on this repository’s Nix architecture, adapting to my answers one question at a time."

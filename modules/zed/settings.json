@@ -1,0 +1,43 @@
+{
+  "agent": {
+    "dock": "right"
+  },
+  "buffer_font_size": 15,
+  "collaboration_panel": {
+    "dock": "left"
+  },
+  "git_panel": {
+    "dock": "left"
+  },
+  "languages": {
+    "Nix": {
+      "formatter": {
+        "external": {
+          "arguments": [],
+          "command": "nixfmt"
+        }
+      },
+      "language_servers": [
+        "nixd",
+        "!nil"
+      ]
+    }
+  },
+  "node": {
+    "ignore_system_version": false,
+    "npm_path": "npm",
+    "path": "node"
+  },
+  "outline_panel": {
+    "dock": "left"
+  },
+  "project_panel": {
+    "dock": "left"
+  },
+  "theme": {
+    "dark": "One Dark",
+    "light": "One Light",
+    "mode": "system"
+  },
+  "ui_font_size": 16
+}
