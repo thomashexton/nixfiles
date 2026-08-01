@@ -25,7 +25,6 @@
       programs = {
         steam = {
           enable = true;
-          extest.enable = true;
           package = pkgs.steam.override {
             extraEnv = {
               MANGOHUD = "1";
