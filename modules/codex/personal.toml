@@ -18,3 +18,33 @@ UNIFI_NETWORK_HOST = "192.168.10.1"
 UNIFI_NETWORK_USERNAME = "op://Private/UniFi Network/username"
 UNIFI_NETWORK_PASSWORD = "op://Private/UniFi Network/password"
 UNIFI_NETWORK_VERIFY_SSL = "false"
+
+# Proxmox RBAC is authoritative; this token must remain PVEAuditor-only.
+# Pin Nix Python because GUI clients do not inherit the Nix profile PATH.
+[mcp_servers.proxmox]
+command = "op"
+args = [
+  "run",
+  "--",
+  "uvx",
+  "--python",
+  "/etc/profiles/per-user/thomashexton/bin/python3",
+  "proxmox-mcp-plus@0.5.12",
+]
+
+[mcp_servers.proxmox.env]
+PROXMOX_HOST = "minilab.hxtn.net"
+PROXMOX_PORT = "8006"
+PROXMOX_SERVICE = "PVE"
+PROXMOX_USER = "claude@pve"
+PROXMOX_TOKEN_NAME = "mcp"
+PROXMOX_TOKEN_VALUE = "op://Homelab/Proxmox Host - minilab - Claude MCP/credential"
+PROXMOX_VERIFY_SSL = "true"
+PROXMOX_DEV_MODE = "false"
+REQUESTS_CA_BUNDLE = "/etc/codex/proxmox-ca-bundle.pem"
+LOG_LEVEL = "INFO"
+PROXMOX_JOBS_SQLITE_PATH = ":memory:"
+COMMAND_POLICY_MODE = "deny_all"
+COMMAND_POLICY_HIGH_RISK_MODE = "enforce"
+COMMAND_POLICY_HIGH_RISK_REQUIRE_APPROVAL_TOKEN = "true"
+COMMAND_POLICY_HIGH_RISK_APPROVAL_TOKEN = "op://Homelab/Proxmox Host - minilab - Claude MCP/high_risk_approval_token"
