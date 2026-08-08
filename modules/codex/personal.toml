@@ -4,7 +4,9 @@ url = "https://mcp-readonly.pocketsmith.com/mcp"
 
 # Notion's maintained MCP server; authorize via OAuth on first use.
 [mcp_servers.notion]
-url = "https://mcp.notion.com/mcp"
+enabled = true
+command = "npx"
+args = ["-y", "mcp-remote", "https://mcp.notion.com/mcp"]
 
 [mcp_servers.unifi-network]
 command = "op"
