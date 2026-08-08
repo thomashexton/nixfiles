@@ -43,6 +43,10 @@
               enable = true;
               enable32Bit = true;
             };
+            bluetooth = {
+              enable = true;
+              powerOnBoot = true;
+            };
           };
 
           users.users.thomashexton = {
